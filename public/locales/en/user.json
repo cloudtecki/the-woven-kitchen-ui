@@ -1,0 +1,16 @@
+{
+  "profile": {
+    "title": "User Profile",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "editButton": "Edit Profile",
+    "saveButton": "Save Changes",
+    "cancelButton": "Cancel",
+    "changePassword": "Change Password",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "updateSuccess": "Profile updated successfully.",
+    "updateError": "An error occurred while updating the profile."
+  }
+}

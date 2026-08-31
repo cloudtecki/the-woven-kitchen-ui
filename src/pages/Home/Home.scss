@@ -1,0 +1,32 @@
+.twk-home {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow-x: auto;
+  background: var(--twk-bg-colors-default-primary);
+  color: var(--twk-text-colors-default-primary);
+
+  &__main {
+    // flex: 1;
+    // padding: var(--sizing-20);
+    // @include container-height-overflow;
+    height: auto;
+    overflow-y: auto;
+    flex: 1;
+
+    h1 {
+      font-weight: var(--font-weight-light);
+    }
+  }
+  &__read-the-docs {
+    margin-top: var(--sizing-20);
+    font-size: var(--font-size-16);
+    line-height: var(--line-height-24);
+    color: var(--twk-text-colors-default-secondary);
+  }
+
+  &__card {
+    padding: var(--sizing-10);
+  }
+}

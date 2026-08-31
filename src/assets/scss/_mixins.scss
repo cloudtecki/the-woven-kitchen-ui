@@ -1,0 +1,273 @@
+@use 'sass:math';
+
+@function toRem($size) {
+  $remSize: math.div($size, 14px);
+  @return $remSize * 1rem;
+}
+
+@mixin text-pre-ellipsis {
+  text-overflow: ellipsis;
+  white-space: pre;
+  overflow: hidden;
+}
+
+@mixin text-outline($underlineOffset) {
+  text-underline-offset: toRem($underlineOffset);
+  text-decoration: underline;
+}
+
+// Font size
+@mixin font-size($size) {
+  font-size: toRem($size);
+}
+
+@mixin ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin scrollbars($width, $thumbColor, $height: $width) {
+  &::-webkit-scrollbar {
+    width: toRem($width);
+    height: toRem($height);
+    cursor: pointer !important;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: toRem(8px);
+    background: $thumbColor;
+    cursor: pointer !important;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    cursor: pointer !important;
+  }
+  &::-webkit-scrollbar:hover {
+    cursor: pointer !important;
+  }
+}
+
+@mixin no-bdr {
+  border: 0;
+}
+
+@mixin no-outline {
+  outline: none;
+}
+
+@mixin flex {
+  display: flex;
+}
+
+@mixin flex-column {
+  @include flex;
+  flex-direction: column;
+}
+
+@mixin flex-row {
+  @include flex;
+  flex-direction: row;
+}
+
+@mixin flex-center-default {
+  @include flex;
+  align-items: center;
+}
+
+@mixin flex-center {
+  @include flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-start-center {
+  @include flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+@mixin flex-center-start {
+  @include flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@mixin flex-start {
+  @include flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+@mixin flex-start-end {
+  @include flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+@mixin start-default-space-between {
+  @include flex;
+  justify-content: space-between;
+}
+
+@mixin flex-center-space-between {
+  @include flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-start-space-between {
+  @include flex;
+  align-items: start;
+  justify-content: space-between;
+}
+
+@mixin flex-end {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+@mixin flex-end-default {
+  display: flex;
+  align-items: flex-end;
+}
+
+@mixin flex-baseline-default {
+  display: flex;
+  align-items: baseline;
+}
+
+@mixin flex-center-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@mixin inline-flex-center {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@mixin inline-flex-center-default {
+  display: inline-flex;
+  align-items: center;
+}
+
+@mixin flex-wrap-space-between {
+  @include flex-wrap;
+  justify-content: space-between;
+}
+
+@mixin flex-column-center {
+  @include flex-column;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin opacity-transition {
+  transition: opacity 0.25s ease;
+}
+
+@mixin no-space {
+  margin: 0;
+  padding: 0;
+}
+
+@mixin no-padding {
+  padding: 0;
+}
+
+@mixin no-margin {
+  margin: 0;
+}
+
+@mixin fixed {
+  position: fixed;
+  left: 0;
+  z-index: 99;
+  margin: 0 auto;
+}
+
+@mixin font-styles($family, $size, $line: inherit, $color: inherit, $weight) {
+  font-family: $family;
+  font-size: $size;
+  line-height: $line;
+  color: $color;
+  font-weight: $weight;
+}
+
+@mixin font-size-color($size, $line: inherit, $color: inherit) {
+  font-size: $size;
+  line-height: $line;
+  color: $color;
+}
+
+@mixin text-clamp-ellipsis($row) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $row;
+  -webkit-box-orient: vertical;
+}
+
+@mixin text-wrap {
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+@mixin container-height-overflow {
+  height: 100%;
+  overflow-y: auto;
+  @include scrollbars(5px, var(--scrollbar-bg));
+}
+
+@mixin icon-dimensions {
+  width: toRem(24px);
+  height: toRem(24px);
+}
+
+@mixin border-line {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+@mixin border-line-before {
+  content: '';
+  position: absolute;
+  bottom: toRem(-6);
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--app-nav-menu-active-color);
+  transition: width 0.3s ease;
+}
+
+@mixin pointer-cursor {
+  cursor: pointer;
+}
+
+@mixin btn-primary {
+  background-color: var(--btn-primary-bg-color);
+  border-color: var(--btn-primary-border-color);
+  border-radius: 0;
+}
+
+@mixin btn-secondary {
+  border-radius: 0;
+}
+
+@mixin btn-transparent {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+@mixin heading-text {
+  font-size: 30px;
+  font-family: $font-family-primary;
+}

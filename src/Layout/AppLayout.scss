@@ -1,0 +1,11 @@
+.twk-app-layout {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+
+  &__main {
+    overflow: hidden;
+    display: flex;
+  }
+}

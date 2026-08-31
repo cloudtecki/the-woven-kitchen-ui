@@ -1,0 +1,10 @@
+# Lock files
+packge-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+#Ignore everything in the Helm folder
+Heml/
+
+#Ignore the Azure Pipelines files
+Pipelines/azure-pipelines.yml
