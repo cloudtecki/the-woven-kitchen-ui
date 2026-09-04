@@ -1,5 +1,6 @@
 import { string } from "yup";
 export * from './user'
+export * from './health'
 
 export const stringRequired = string().required();
 export const stringOptional = string().notRequired();

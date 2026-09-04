@@ -5,6 +5,7 @@ export enum APIEndpoints {
     DELETE_USER = '/user/{userId}/delete',
     CREATE_USER = '/user/create',
     GET_PRODUCTS = 'https://api.escuelajs.co/api/v1/products',
+    GET_HEALTH = '/api/health',
 }
 
 export enum HttpStatusCodes {
