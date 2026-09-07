@@ -1,0 +1,291 @@
+.twk-food-animation {
+  width: 100%;
+  height: auto;
+  max-width: 420px;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  &--login {
+    max-width: 360px;
+  }
+
+  &__pot {
+    fill: var(--twk-auth-forest-500, #224b35);
+  }
+
+  &__pot-band {
+    fill: var(--twk-auth-gold, #c8a24a);
+  }
+
+  &__bowl {
+    fill: var(--twk-auth-forest-500, #224b35);
+  }
+
+  &__bowl-rim {
+    fill: var(--twk-auth-gold-light, #d9b968);
+  }
+
+  &__rice {
+    fill: var(--twk-auth-cream-soft, #efe4cd);
+  }
+
+  &__lid {
+    fill: var(--twk-auth-gold, #c8a24a);
+    transform-origin: 200px 146px;
+    animation: twk-gen-bob 6s ease-in-out infinite;
+  }
+
+  &__lid-knob {
+    fill: var(--twk-auth-cream, #f7f0e0);
+  }
+
+  &__spoon {
+    fill: none;
+    stroke: var(--twk-auth-gold-light, #d9b968);
+    stroke-width: 7;
+    stroke-linecap: round;
+  }
+
+  &__steam {
+    stroke: var(--twk-auth-cream, #f7f0e0);
+    stroke-width: 12;
+    stroke-linecap: round;
+    fill: none;
+    opacity: 0.55;
+  }
+
+  &__steam-curve {
+    transform-origin: center;
+    animation: twk-steam-rise 4.2s ease-in-out infinite;
+
+    &--2 {
+      animation-delay: 1.2s;
+    }
+
+    &--3 {
+      animation-delay: 2.4s;
+    }
+  }
+
+  &__herb {
+    fill: var(--twk-auth-gold, #c8a24a);
+    transform-origin: center;
+    animation: twk-leaf-float 7s ease-in-out infinite;
+
+    &--2 {
+      animation-delay: 1.6s;
+    }
+
+    &--3 {
+      animation-delay: 3.1s;
+    }
+
+    &--4 {
+      animation-delay: 4.4s;
+    }
+  }
+
+  &__sparkle {
+    fill: var(--twk-auth-gold-light, #d9b968);
+    animation: twk-sparkle 3.6s ease-in-out infinite;
+  }
+
+  &__float {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: twk-leaf-float 6s ease-in-out infinite;
+
+    &--2 {
+      animation-delay: 1.4s;
+    }
+
+    &--3 {
+      animation-delay: 2.8s;
+    }
+  }
+
+  &__tomato {
+    fill: #e0392b;
+    stroke: #b8281c;
+    stroke-width: 3;
+  }
+
+  &__tomato-inner {
+    fill: #f06655;
+  }
+
+  &__seed {
+    fill: #ffd9a8;
+  }
+
+  &__leaf {
+    fill: #5d9b4a;
+    stroke: #3f7d31;
+    stroke-width: 2;
+
+    &--small {
+      fill: #7fb069;
+    }
+  }
+
+  &__onion-ring {
+    fill: none;
+    stroke: #e39ec1;
+    stroke-width: 4;
+  }
+
+  &__pea {
+    fill: #6faf4f;
+    stroke: #4e8d3a;
+    stroke-width: 1.5;
+  }
+
+  &__drop {
+    fill: #f39c2c;
+  }
+
+  &__noodles {
+    ellipse {
+      fill: #f4c95d;
+    }
+
+    path {
+      fill: none;
+      stroke: #d99a2b;
+      stroke-width: 5;
+      stroke-linecap: round;
+    }
+
+    rect {
+      fill: #d94f30;
+    }
+
+    circle {
+      fill: #5d9b4a;
+    }
+  }
+
+  &__bowl-buddy {
+    fill: #8ba87f;
+    stroke: #3f5540;
+    stroke-width: 4;
+  }
+
+  &__bowl-rim {
+    fill: #a9c19b;
+    stroke: #3f5540;
+    stroke-width: 4;
+  }
+
+  &__limb {
+    fill: none;
+    stroke: #2b2118;
+    stroke-width: 7;
+    stroke-linecap: round;
+  }
+
+  &__hand {
+    fill: #2b2118;
+  }
+
+  &__shoe {
+    fill: #2b2118;
+  }
+
+  &__face-eye {
+    fill: #ffffff;
+    stroke: #2b2118;
+    stroke-width: 2.5;
+  }
+
+  &__face-pupil {
+    fill: #2b2118;
+  }
+
+  &__face-spark {
+    fill: #ffffff;
+  }
+
+  &__face-wink {
+    fill: none;
+    stroke: #2b2118;
+    stroke-width: 4;
+    stroke-linecap: round;
+  }
+
+  &__face-smile {
+    fill: #7a2f26;
+  }
+
+  &__face-tongue {
+    fill: #e26d5a;
+  }
+
+  &__face-blush {
+    fill: #e89090;
+    opacity: 0.7;
+  }
+}
+
+@keyframes twk-steam-rise {
+  0% {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: translateY(-42px);
+    opacity: 0;
+  }
+}
+
+@keyframes twk-leaf-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-12px) rotate(8deg);
+  }
+}
+
+@keyframes twk-gen-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes twk-sparkle {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .twk-food-animation *,
+  .twk-food-animation *::before,
+  .twk-food-animation *::after {
+    animation: none !important;
+  }
+}

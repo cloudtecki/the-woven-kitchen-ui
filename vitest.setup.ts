@@ -47,19 +47,21 @@ class IntersectionObserverMock implements IntersectionObserver {
 global.ResizeObserver = ResizeObserverMock;
 global.IntersectionObserver = IntersectionObserverMock;
 
-// Mock matchMedia
+// Mock matchMedia (plain function so vi.resetAllMocks() in test files cannot wipe it)
+const mockMatchMedia = (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener() {}, // deprecated
+    removeListener() {}, // deprecated
+    addEventListener() {},
+    removeEventListener() {},
+    dispatchEvent() {},
+});
+
 Object.defineProperty(window, 'matchMedia', {
     writable: true,
-    value: vi.fn().mockImplementation((query) => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: vi.fn(), // deprecated
-        removeListener: vi.fn(), // deprecated
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-    })),
+    value: mockMatchMedia,
 });
 
 // Mock scrollTo
@@ -88,11 +90,9 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-    vi.resetAllMocks();
-    // Mock the AuthService getAuthToken method to return an empty string promise
-    vi.spyOn(AuthService, 'getAuthToken').mockImplementation(() => {
-        return Promise.resolve('');
-    });
+    // Mock the AuthService getToken method to return null
+    vi.spyOn(AuthService, 'getToken').mockReturnValue(null);
+    localStorage.clear();
 });
 
 afterEach(() => {

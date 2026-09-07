@@ -22,9 +22,14 @@ export class ServiceBase {
             };
         } catch (error) {
             const { message, response } = error as AxiosError;
+            const responseData = response?.data as { message?: unknown } | undefined;
+            const responseMessage =
+                typeof responseData?.message === 'string'
+                    ? responseData.message
+                    : message;
             return {
                 error: {
-                    data: message,
+                    data: responseMessage,
                     status: response?.status || HttpStatusCodes.INTERNAL_SERVER_ERROR,
                 },
                 hasErrors: true,

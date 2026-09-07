@@ -15,7 +15,7 @@ i18n
     // for all options read: https://www.i18next.com/overview/configuration-options
     .init({
         fallbackLng: 'en',
-        ns: ['common', 'user'],
+        ns: ['common', 'user', 'auth'],
         backend: {
             loadPath: `${i18nUri}/locales/{{lng}}/{{ns}}.json?v=${process.env.REACT_APP_BUILD_NUMBER}`,
         },

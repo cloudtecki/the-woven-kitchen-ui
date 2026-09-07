@@ -1,0 +1,101 @@
+.twk-chef-mascot {
+  width: 132px;
+  margin: 0 auto 10px;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  &__halo {
+    fill: #f4e8cf;
+  }
+
+  &--login &__halo {
+    fill: #eef3e6;
+  }
+
+  &__sprig {
+    fill: #7fb069;
+    stroke: #4e8d3a;
+    stroke-width: 1.6;
+
+    path:last-child {
+      fill: none;
+    }
+  }
+
+  &__dot {
+    fill: #8fbf6f;
+  }
+
+  &__arm {
+    stroke: #8a5a33;
+    stroke-width: 5;
+    stroke-linecap: round;
+    fill: none;
+
+    circle {
+      fill: #ffd9ae;
+      stroke: none;
+    }
+
+    ellipse,
+    path:last-child {
+      fill: none;
+      stroke: #5c6b5f;
+      stroke-width: 2.2;
+    }
+  }
+
+  &__hat {
+    circle,
+    rect {
+      fill: #fffdf7;
+      stroke: #d9cfae;
+      stroke-width: 2.4;
+    }
+  }
+
+  &__face {
+    fill: #ffd9ae;
+    stroke: #e8a86d;
+    stroke-width: 2;
+  }
+
+  &__eye {
+    fill: #2b2118;
+  }
+
+  &__wink {
+    fill: none;
+    stroke: #2b2118;
+    stroke-width: 2.8;
+    stroke-linecap: round;
+  }
+
+  &__spark {
+    fill: #fffdf7;
+  }
+
+  &__blush {
+    fill: #f49e9e;
+    opacity: 0.65;
+  }
+
+  &__mouth {
+    path:first-child {
+      fill: #8e3b2f;
+    }
+
+    path:last-child {
+      fill: #d76a6a;
+    }
+  }
+
+  &__mustache {
+    fill: #5b3a29;
+  }
+}
