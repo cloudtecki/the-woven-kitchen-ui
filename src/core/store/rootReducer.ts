@@ -5,8 +5,10 @@ import {
 } from 'core/api/base.api';
 // import userReducer from 'core/api/user/user.reducer';
 import user from "core/api/user/user.slice";
+import auth from "core/api/auth/auth.slice";
 
 const rootReducer = combineReducers({
+    auth,
     user,
     [apiReducerPath]: apiReducer,
 });

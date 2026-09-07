@@ -1,4 +1,6 @@
 export enum APIEndpoints {
+    SIGNUP = '/api/auth/signup',
+    LOGIN = '/api/auth/login',
     GET_USER = '/user',
     GET_USER_BY_ID = '/user/{userId}',
     UPDATE_USER = '/user/{userId}/update',

@@ -1,0 +1,56 @@
+.twk-login-form {
+  &__forgot {
+    display: flex;
+    justify-content: flex-end;
+    margin: -6px 0 10px;
+
+    .ant-btn-link {
+      padding: 0;
+      height: auto;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--twk-auth-leaf-700, #3f7d31);
+    }
+  }
+
+  &__divider {
+    margin: 20px 0 16px;
+    font-size: 13px;
+    color: #9aa39a;
+
+    &::before,
+    &::after {
+      border-top-color: #e7e0cf;
+    }
+  }
+
+  &__social {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  &__social-button {
+    height: 50px;
+    border-radius: 12px;
+    border: 1.5px solid var(--twk-auth-line, #e4d9bd);
+    font-size: 15px;
+    font-weight: 600;
+    color: #3c443c;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: none;
+
+    &:hover {
+      border-color: var(--twk-auth-leaf-600, #4e8d3a);
+      color: #3c443c;
+    }
+  }
+
+  &__social-icon {
+    width: 22px;
+    height: 22px;
+  }
+}
