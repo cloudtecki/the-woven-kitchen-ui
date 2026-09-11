@@ -35,6 +35,10 @@ const renderLogin = (ui: ReactElement) => {
                             <Route path="/login" element={ui} />
                             <Route path="/signup" element={<div>SignupLayout</div>} />
                             <Route path="/" element={<div>HomeLayout</div>} />
+                            <Route
+                                path="/admin/dashboard"
+                                element={<div>AdminDashboardLayout</div>}
+                            />
                         </Routes>
                     </MemoryRouter>
                 </I18nextProvider>
@@ -132,7 +136,7 @@ describe('LoginPage', () => {
         await user.type(screen.getByLabelText('Password'), 'StrongPassword123');
         await user.click(screen.getByRole('button', { name: 'Login' }));
 
-        expect(await screen.findByText('HomeLayout')).toBeInTheDocument();
+        expect(await screen.findByText('AdminDashboardLayout')).toBeInTheDocument();
         expect(loginTrigger).toHaveBeenCalledWith({
             email: 'customer@example.com',
             password: 'StrongPassword123',

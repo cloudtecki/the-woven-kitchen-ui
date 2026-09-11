@@ -1,0 +1,83 @@
+.twk-admin-layout {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--twk-admin-bg);
+
+  &__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background: var(--twk-admin-bg);
+  }
+
+  &__sider {
+    background: var(--twk-admin-sidebar-bg);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition:
+      width var(--twk-admin-transition-med),
+      max-width var(--twk-admin-transition-med),
+      min-width var(--twk-admin-transition-med),
+      flex-basis var(--twk-admin-transition-med) !important;
+
+    .ant-layout-sider-children {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+  }
+
+  &__inner {
+    min-width: 0;
+    background: var(--twk-admin-bg);
+  }
+
+  &__header {
+    padding: 0;
+    height: var(--twk-admin-header-height, 64px);
+    line-height: normal;
+    background: transparent;
+    z-index: 100;
+  }
+
+  &__content {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 24px;
+    min-width: 0;
+    background: var(--twk-admin-bg);
+    scroll-behavior: smooth;
+  }
+
+  // Mobile drawer — sidebar surface with overlay backdrop (antd handles backdrop).
+  &__drawer {
+    .ant-drawer-content {
+      background: var(--twk-admin-sidebar-bg);
+    }
+
+    .ant-drawer-body {
+      padding: 0;
+      overflow: hidden;
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .twk-admin-layout {
+    &__content {
+      padding: 16px;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .twk-admin-layout {
+    &__content {
+      padding: 12px;
+    }
+  }
+}

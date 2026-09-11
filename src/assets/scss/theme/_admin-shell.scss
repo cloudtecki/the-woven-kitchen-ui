@@ -1,0 +1,65 @@
+// Cloud Kitchen Admin Panel — centralized color system.
+// Warm, appetite-friendly but professional. WCAG AA compliant pairings.
+// Sidebar = dark espresso; Header = warm paper with blur; Accent = saffron orange.
+// All admin shell components must use these vars — no hardcoded hex in tsx/scss.
+
+:root {
+  // Brand / accent
+  --twk-admin-accent: #ea580c;
+  --twk-admin-accent-hover: #c2410c;
+  --twk-admin-accent-active: #9a3412;
+  --twk-admin-accent-soft: #ffedd5;
+  --twk-admin-accent-soft-hover: #fed7aa;
+  --twk-admin-accent-ink: #7c2d12; // text on light accent surfaces (7:1 on #ffedd5)
+  --twk-admin-accent-glow: rgba(234, 88, 12, 0.18);
+
+  // Surfaces
+  --twk-admin-bg: #faf7f2;
+  --twk-admin-surface: #fffdf8;
+  --twk-admin-header-bg: rgba(255, 253, 248, 0.88);
+  --twk-admin-header-bg-solid: #fffdf8;
+
+  // Text
+  --twk-admin-text-primary: #1c1917;
+  --twk-admin-text-secondary: #78716c;
+  --twk-admin-text-tertiary: #a8a29e;
+
+  // Borders / shadows
+  --twk-admin-border: #e9e0d3;
+  --twk-admin-border-soft: #f2eadd;
+  --twk-admin-shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.06);
+  --twk-admin-shadow-md: 0 4px 16px rgba(28, 25, 23, 0.1);
+  --twk-admin-shadow-header: 0 1px 12px rgba(28, 25, 23, 0.08);
+
+  // Sidebar (dark espresso, complementary to light header)
+  --twk-admin-sidebar-bg: #1f1a15;
+  --twk-admin-sidebar-bg-2: #2a221b;
+  --twk-admin-sidebar-text: #ede8e1;
+  --twk-admin-sidebar-text-secondary: #b8afa4;
+  --twk-admin-sidebar-text-faint: #8a8078;
+  --twk-admin-sidebar-hover-bg: rgba(255, 255, 255, 0.06);
+  --twk-admin-sidebar-active-bg: rgba(234, 88, 12, 0.2);
+  --twk-admin-sidebar-active-text: #ffffff;
+  --twk-admin-sidebar-active-icon: #fdba74;
+  --twk-admin-sidebar-border: rgba(255, 255, 255, 0.08);
+  --twk-admin-sidebar-brand-accent: #fb923c;
+
+  // Status
+  --twk-admin-success: #15803d;
+  --twk-admin-success-bg: #dcfce7;
+  --twk-admin-warning: #b45309;
+  --twk-admin-warning-bg: #fef3c7;
+  --twk-admin-error: #dc2626;
+  --twk-admin-error-bg: #fee2e2;
+  --twk-admin-info: #0f69ae;
+  --twk-admin-info-bg: #e0f2fe;
+
+  // Motion
+  --twk-admin-transition-fast: 200ms ease;
+  --twk-admin-transition-med: 280ms ease;
+  --twk-admin-sidebar-width: 264px;
+  --twk-admin-sidebar-collapsed-width: 80px;
+  --twk-admin-header-height: 64px;
+  --twk-admin-radius-md: 10px;
+  --twk-admin-radius-lg: 14px;
+}

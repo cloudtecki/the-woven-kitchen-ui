@@ -1,6 +1,11 @@
 import { APIEndpoints } from 'core/base/enum/api';
-import { LoginApiResponseSchema, SignupApiResponseSchema } from 'core/base/schema/auth';
 import {
+    CurrentUserApiResponseSchema,
+    LoginApiResponseSchema,
+    SignupApiResponseSchema,
+} from 'core/base/schema/auth';
+import {
+    CurrentUserApiResponse,
     LoginApiResponse,
     LoginRequest,
     SignupApiResponse,
@@ -16,5 +21,9 @@ export class AuthApiService extends ServiceBase {
 
     static login(payload: LoginRequest): Promise<ApiIResult<LoginApiResponse>> {
         return this.post(APIEndpoints.LOGIN, payload, LoginApiResponseSchema);
+    }
+
+    static getCurrentUser(): Promise<ApiIResult<CurrentUserApiResponse>> {
+        return this.get(APIEndpoints.GET_CURRENT_USER, CurrentUserApiResponseSchema);
     }
 }
