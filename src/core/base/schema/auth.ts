@@ -43,3 +43,9 @@ export const LoginApiResponseSchema = object({
   data: LoginDataSchema.required(),
   message: string().required(),
 });
+
+export const CurrentUserApiResponseSchema = object({
+  success: boolean().required(),
+  data: AuthUserSchema.required(),
+  message: string().notRequired(),
+});

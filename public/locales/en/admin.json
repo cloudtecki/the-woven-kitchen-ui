@@ -1,0 +1,99 @@
+{
+  "brand": {
+    "line1": "The Woven",
+    "line2": "Cloud Kitchen"
+  },
+  "header": {
+    "title": "Admin Console",
+    "logout": "Logout",
+    "menuToggle": "Toggle navigation menu",
+    "notifications": {
+      "title": "Notifications",
+      "markAllRead": "Mark all as read",
+      "empty": "You're all caught up.",
+      "ariaLabel": "Notifications"
+    },
+    "userMenu": {
+      "profile": "Profile",
+      "settings": "Settings",
+      "ariaLabel": "Account menu"
+    }
+  },
+  "sidebar": {
+    "ariaLabel": "Primary navigation",
+    "groups": {
+      "overview": "Overview",
+      "operations": "Operations",
+      "management": "Management",
+      "finance": "Finance",
+      "system": "System"
+    }
+  },
+  "roles": {
+    "ADMIN": "Admin",
+    "CUSTOMER": "Customer"
+  },
+  "loading": {
+    "message": "Loading user information…"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "customers": "Customers",
+    "menu": "Menu",
+    "dailyMenu": "Daily Menu",
+    "orders": "Orders",
+    "payments": "Payments",
+    "deliveries": "Deliveries",
+    "expenses": "Expenses",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "pages": {
+    "signedInAs": "Signed in as {{name}} ({{role}})",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Overview of orders, revenue and kitchen activity."
+    },
+    "customers": {
+      "title": "Customers",
+      "description": "Manage customer accounts. Visible to admins only."
+    },
+    "menu": {
+      "title": "Menu",
+      "description": "Create and manage menu items. Visible to admins only."
+    },
+    "dailyMenu": {
+      "title": "Daily Menu",
+      "description": "Tomorrow's menu, available to all authenticated users."
+    },
+    "orders": {
+      "title": "Orders",
+      "description": "View and track orders."
+    },
+    "payments": {
+      "title": "Payments",
+      "description": "Payment records. Visible to admins only."
+    },
+    "deliveries": {
+      "title": "Deliveries",
+      "description": "Delivery operations. Visible to admins only."
+    },
+    "expenses": {
+      "title": "Expenses",
+      "description": "Expense tracking. Visible to admins only."
+    },
+    "reports": {
+      "title": "Reports",
+      "description": "Business reports. Visible to admins only."
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Application and profile settings."
+    }
+  },
+  "forbidden": {
+    "title": "Access Denied",
+    "message": "You do not have permission to view this page.",
+    "back": "Back to home"
+  }
+}

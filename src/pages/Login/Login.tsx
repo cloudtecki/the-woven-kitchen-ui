@@ -55,7 +55,7 @@ const LoginPage = () => {
                 AuthService.setAuthTokens(result.data.data.token);
                 dispatch(setAuthUser(result.data.data.user));
                 message.success(t('login.successMessage'));
-                navigate(ROUTES.HOME);
+                navigate(ROUTES.ADMIN_DASHBOARD);
                 return;
             }
             const errorPayload = result.error as { status?: number } | undefined;

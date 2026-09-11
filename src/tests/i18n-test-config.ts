@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import commonJson from '../../public/locales/en/common.json';
 import userJson from '../../public/locales/en/user.json';
 import authJson from '../../public/locales/en/auth.json';
+import adminJson from '../../public/locales/en/admin.json';
 
 // Initialize i18n instance for testing
 const setupI18n = () => {
@@ -14,13 +15,14 @@ const setupI18n = () => {
     i18n.use(initReactI18next).init({
         lng: 'en',
         fallbackLng: 'en',
-        ns: ['common', 'user', 'auth'],
+        ns: ['common', 'user', 'auth', 'admin'],
         defaultNS: 'common',
         resources: {
             en: {
                 common: commonJson,
                 user: userJson,
                 auth: authJson,
+                admin: adminJson,
             },
         },
         interpolation: {

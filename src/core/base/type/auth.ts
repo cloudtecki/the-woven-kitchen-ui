@@ -1,5 +1,9 @@
 export type AuthRole = 'ADMIN' | 'CUSTOMER';
 
+// Alias kept for navigation/route-guard readability. Single source of truth
+// stays AuthRole (mirrors backend ROLES in backend-twk-admin/src/shared/constants/roles.js).
+export type UserRole = AuthRole;
+
 export interface AuthUser {
   id: string;
   name: string;
@@ -41,4 +45,12 @@ export interface LoginApiResponse {
   success: boolean;
   data: LoginData;
   message: string;
+}
+
+// GET /api/users/me — backend wraps the user DTO with successResponse(res, user)
+// (no message). Message stays optional to match the backend exactly.
+export interface CurrentUserApiResponse {
+  success: boolean;
+  data: AuthUser;
+  message?: string;
 }
