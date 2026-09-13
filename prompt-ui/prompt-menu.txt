@@ -1,0 +1,74 @@
+# Prompt: Add / Edit Menu Item Page + Delete Confirmation
+
+Build an **Add Menu Item** page that reuses the exact same layout, fields, and components as the existing **Edit Menu Item** page (so Add and Edit share one form component, just with empty vs. pre-filled state). Also add a **delete confirmation modal** to the Menu Items listing page.
+
+## 1. Page Header
+- Back arrow (←) that returns to the Menu Items list.
+- Title: "Add Menu Item" (create mode) / "Edit Menu Item" (edit mode).
+- Subtitle: item name in edit mode, or "New Item" / blank placeholder in create mode.
+- Two tabs below the title: **Basic Info** | **Nutrition (AI)**. Basic Info is the default active tab.
+
+## 2. Basic Info Tab — Fields
+1. **Item Name*** — single-line text input, mandatory.
+2. **Category*** — dropdown/select, mandatory (e.g. Rice & Biryani, Curries, Starters, Breads, Desserts, Beverages).
+3. **Description** — multi-line textarea, optional.
+4. **Serving Size** — text input, optional (e.g. "250g").
+5. **Ingredients** — tag/chip input:
+   - Existing ingredients render as removable chips (✕ on each chip).
+   - "+ Add ingredient" link opens an inline input to add a new chip.
+6. **Variants & Pricing** — dynamic repeatable rows, right-aligned "+ Add Variant" link:
+   - Each row: variant label (e.g. "500g"), **Price** input, optional **Offer Price** input (shown with strikethrough styling once set), and a ✕ remove-row icon.
+   - At least one variant is required to save.
+7. **Food Image** — drag-and-drop upload box with camera icon, helper text "Drag & drop or click to upload", constraint text "JPG, PNG up to 5MB".
+8. **Status** — dropdown with two options: **Active** / **Inactive**. This sets the item's status shown on the listing page:
+   - **Active** → status badge shows **Active** (green pill), item is visible to customers.
+   - **Inactive** → status badge shows **Inactive** (grey/muted pill), item is hidden from customers.
+   - Default = **Active** when creating a new item.
+
+## 3. Basic Info Tab — Footer Actions
+- **Save Draft** (secondary/outline button): saves the item regardless of validation, item status becomes "Draft" (not shown to customers even if Active is checked), stays on the same page.
+- **Save & Continue →** (primary filled button): validates mandatory fields (Item Name, Category, at least one Variant with a price) before saving; on success, advances to the Nutrition (AI) tab.
+- Show inline error text under any mandatory field left empty when "Save & Continue" is clicked.
+
+## 4. Nutrition (AI) Tab
+- **Item Summary card** at top, auto-populated from Basic Info (read-only chips):
+  - Item name with a small icon.
+  - "Serving: {value}" chip.
+  - "{count} ingredients" chip.
+- Below it, an empty-state card:
+  - Robot/AI icon.
+  - Heading: "Generate Nutrition with AI".
+  - Body text: "Our AI will analyze the ingredients and serving size to estimate nutritional values for this item."
+  - **Generate Nutrition ✨** button (primary, filled). No backend logic needed yet — this is a UI-only placeholder button (can log a click / show a toast "Coming soon" or simply be non-functional for now).
+
+## 5. Edit Menu Item Mode
+- Identical component to Add, opened from the "Edit" action on a menu item card.
+- All fields pre-filled with existing item data (name, category, description, serving size, ingredients, variants/prices, image, Status dropdown selection).
+- Nutrition tab pre-populated with existing summary; if nutrition was already generated, optionally show a "Regenerate Nutrition" state instead of the first-time empty state (still no functional logic required — visual only).
+
+## 6. Delete Menu Item Flow
+- "Delete" link/button stays on each menu item card in the listing page.
+- Clicking **Delete** opens a **confirmation modal/dialog** (not an immediate delete):
+  - Title: "Delete Menu Item?"
+  - Body: mention the item name, e.g. "Are you sure you want to delete **{Item Name}**? This action cannot be undone."
+  - Two buttons: **Cancel** (secondary, closes modal, no action) and **Delete** (destructive red/filled, confirms deletion).
+- On confirming Delete: remove the item from the list, close the modal, show a success toast (e.g. "Menu item deleted").
+- On Cancel or clicking outside the modal: close without deleting.
+
+## 7. Status Badges on Listing Page (for consistency)
+- Each menu item card shows a status pill top-right: **Active** (green) or **Inactive** (muted/grey), driven by the Status dropdown from Basic Info.
+- An optional **OFFER** ribbon (top-left) shows automatically if any variant has an Offer Price set.
+- Nutrition status pill under pricing: **✓ Nutrition Approved** (green) if nutrition data exists, **⏳ Nutrition Pending** (yellow) if not yet generated.
+
+## 8. Menu List Card Animation
+- On page load, cards animate in with a staggered fade-up (each card fades in + slides up slightly, ~50-80ms delay between cards).
+- On hover, a card lifts slightly (subtle scale-up ~1.02x and increased shadow) with a smooth transition (~150-200ms ease-out).
+- When a new item is added, its card animates/slides into the grid rather than appearing instantly.
+- When an item is deleted, its card animates out (fade + collapse/shrink) before being removed from the grid, rather than disappearing abruptly.
+- When Status is toggled (Active ↔ Inactive) from the edit page, the badge on the card should transition/fade between colors rather than switching instantly.
+- Keep animations lightweight and quick (150-300ms) so the list still feels responsive, not sluggish.
+
+## 9. Notes
+- Keep visual styling (colors, spacing, chip/pill shapes, button styles) consistent with the existing Edit Menu Item screens.
+- Add and Edit should be the same form component with a `mode` prop (`create` | `edit`) controlling title text and whether fields start empty or pre-filled.
+- No backend/API integration is required for "Generate Nutrition" — UI shell only.

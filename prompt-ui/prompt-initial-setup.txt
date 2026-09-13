@@ -1,0 +1,105 @@
+You are working on the frontend repository for my cloud kitchen management application. (frontend-twk-admin)
+
+D:\real-time-project\twk\frontend-twk-admin
+
+
+## Sprint 0 — Basic Project Setup
+
+### Story 0.1 — Frontend Initial Setup
+
+The basic React project and required packages are ALREADY installed and configured.
+
+Already completed and working:
+
+- React + TypeScript + Vite
+- ESLint
+- Prettier
+- Ant Design
+- React Router
+- Axios
+- Redux Toolkit
+- RTK Query
+- React Hook Form
+- Zod
+- Redux store
+- RTK Query / API integration
+
+## Important
+
+DO NOT recreate or replace the existing setup.
+
+DO NOT change the existing Redux Toolkit setup.
+
+DO NOT change the existing RTK Query setup.
+
+DO NOT change the existing API integration.
+
+DO NOT introduce TanStack Query.
+
+DO NOT install duplicate packages.
+
+First inspect the existing project and understand the current setup.
+
+Only make changes that are required for this basic setup story.
+
+## Tasks
+
+1. Verify the existing project setup.
+
+2. Verify that the application runs successfully.
+
+3. Verify that Redux Toolkit is correctly configured.
+
+4. Verify that RTK Query is correctly configured.
+
+5. Verify that the existing API integration/base API is working.
+
+6. Verify that React Router is working.
+
+7. Verify that Ant Design is working.
+
+8. Verify that ESLint and Prettier are working.
+
+9. Verify the existing environment configuration/API base URL.
+
+10. Make only minimal fixes if something is missing or incorrectly configured.
+
+11. Do not implement Login, Customers, Orders, Menu, Payments, Dashboard, or any other business functionality.
+
+12. Do not create unnecessary folders or architecture at this stage.
+
+## Validation
+
+After verification/fixes:
+
+- Run the application.
+- Run ESLint.
+- Run TypeScript/build validation.
+- Confirm the existing Redux Toolkit setup works.
+- Confirm the existing RTK Query setup works.
+- Confirm the existing API integration works.
+
+## Definition of Done
+
+Sprint 0 — Story 0.1 is complete when:
+
+- Existing React application runs.
+- Existing packages work correctly.
+- Redux Toolkit works.
+- RTK Query works.
+- API integration works.
+- React Router works.
+- Ant Design works.
+- ESLint passes.
+- Build/type checking passes.
+- No existing functionality is broken.
+
+At the end, give me a short summary of:
+1. What you inspected.
+2. What was already correct.
+3. What you changed, if anything.
+4. Validation/build results.
+
+Provide md file for initial setup - Create a folder like document->initial-setup.md
+
+Do not start Sprint 1 or implement Login.

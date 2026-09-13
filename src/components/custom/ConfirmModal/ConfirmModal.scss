@@ -1,0 +1,13 @@
+.twk-confirm-modal {
+  &__body {
+    margin: 12px 0 24px;
+    font-size: 14px;
+    color: var(--color-base-neutral-700, #4e4e5d);
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+}

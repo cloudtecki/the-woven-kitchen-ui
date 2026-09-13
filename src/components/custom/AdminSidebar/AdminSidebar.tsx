@@ -116,8 +116,12 @@ export const AdminSidebar = ({
     return groups;
   }, [byKey, onNavigate, t]);
 
+  // Exact match, plus prefix match so child routes (e.g. /admin/menu/new,
+  // /admin/menu/:id/edit) keep the parent entry highlighted.
   const activeKey = visibleItems.find(
-    (item) => item.path === location.pathname,
+    (item) =>
+      location.pathname === item.path ||
+      location.pathname.startsWith(`${item.path}/`),
   )?.key;
   const defaultOpenKeys = SIDEBAR_GROUPS.map((g) => `group-${g.key}`);
 
