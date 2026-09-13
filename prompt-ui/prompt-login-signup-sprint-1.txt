@@ -1,0 +1,1058 @@
+# Story 1.1 — Customer Signup & Login UI
+
+You are working on the **Frontend** for **The Woven Cloud Kitchen**.
+
+Implement the customer authentication UI using the existing frontend architecture, components, styling system, API layer, and coding conventions.
+
+Before making changes, inspect the existing frontend codebase and understand:
+
+* Project structure
+* Existing routing
+* Existing layout components
+* Existing theme/design system
+* Existing form components
+* Existing input components
+* Existing buttons
+* Existing validation utilities
+* Existing Redux store
+* Existing RTK Query/API configuration
+* Existing authentication state
+* Existing notification/toast system
+* Existing typography and spacing
+* Existing responsive design patterns
+* Existing SCSS/BEM conventions
+* Existing reusable components
+
+**Do not unnecessarily rewrite or restructure existing working code.**
+
+Reuse existing components and utilities wherever possible.
+
+Use strict TypeScript.
+
+Do not use `any`.
+
+---
+
+# 1. Customer Signup Page
+
+Create the customer signup page at:
+
+```text
+/signup
+```
+
+The page should allow a new customer to create an account.
+
+## Signup Fields
+
+The form must contain:
+
+### Required
+
+```text
+Full Name
+Mobile Number
+Email
+Password
+Confirm Password
+```
+
+### Optional
+
+```text
+Alternate Mobile Number
+Bio
+```
+
+### Consent
+
+Include Terms & Conditions / Privacy Policy consent if this is already required by the application.
+
+Example:
+
+```text
+☐ I agree to the Terms & Conditions and Privacy Policy
+```
+
+The signup button must remain disabled or prevent submission until required validation/consent requirements are satisfied.
+
+---
+
+# 2. Signup Form Validation
+
+Use the project's existing validation approach.
+
+If Zod is already available, use:
+
+```text
+Zod
++
+React Hook Form
+```
+
+Do not introduce another validation library unnecessarily.
+
+Validate:
+
+### Name
+
+* Required
+* Trim whitespace
+* Minimum reasonable length
+* Maximum reasonable length
+
+### Mobile Number
+
+* Required
+* Must be a valid phone number
+* Must not be empty
+* Must not be null
+* Must not be undefined
+* Should be normalized consistently before API submission
+
+### Alternate Mobile Number
+
+* Optional
+* If provided, must be a valid phone number
+* Must not be the same as the primary mobile number
+
+### Email
+
+* Required
+* Valid email format
+* Normalize email appropriately, such as trimming whitespace
+
+### Password
+
+* Required
+* Follow the backend password policy
+* Show appropriate validation messages
+
+### Confirm Password
+
+* Required
+* Must match password
+
+### Bio
+
+* Optional
+* Validate maximum length if backend defines one
+
+---
+
+# 3. Signup API Integration
+
+Connect the form to:
+
+```http
+POST /api/auth/signup
+```
+
+Expected request structure:
+
+```json
+{
+  "name": "Customer Name",
+  "email": "customer@example.com",
+  "phone": "9876543210",
+  "alternatePhone": "9123456780",
+  "password": "StrongPassword123",
+  "bio": "Customer bio"
+}
+```
+
+Do not send:
+
+```text
+role
+isActive
+_id
+createdAt
+updatedAt
+```
+
+The frontend must never allow the customer to select or submit:
+
+```text
+ADMIN
+```
+
+as a signup role.
+
+The backend remains responsible for enforcing:
+
+```text
+role = CUSTOMER
+```
+
+---
+
+# 4. Duplicate Email / Mobile Errors
+
+Handle backend conflict responses properly.
+
+Examples:
+
+```text
+Email already registered
+Mobile number already registered
+```
+
+Display the error close to the relevant field where possible.
+
+For example:
+
+```text
+Email
+customer@example.com
+
+Email already registered
+```
+
+and:
+
+```text
+Mobile Number
+9876543210
+
+Mobile number already registered
+```
+
+Do not display raw backend/database errors to the user.
+
+Use the application's existing notification/toast system for general API errors if available.
+
+---
+
+# 5. Password Visibility
+
+Implement password visibility controls for:
+
+```text
+Password
+Confirm Password
+```
+
+Allow the user to toggle:
+
+```text
+Show password
+Hide password
+```
+
+Use existing icon/button components if available.
+
+The visibility toggle must not interfere with form validation.
+
+---
+
+# 6. Loading State
+
+While signup is being submitted:
+
+* Disable the submit button
+* Show loading indicator
+* Prevent duplicate submissions
+* Keep entered form data intact
+* Prevent accidental multiple API requests
+
+Example:
+
+```text
+Creating Account...
+```
+
+After completion, restore the normal state.
+
+---
+
+# 7. Successful Signup
+
+After successful signup:
+
+Display an appropriate success message such as:
+
+```text
+Account created successfully.
+Please login to continue.
+```
+
+Then redirect the customer to:
+
+```text
+/login
+```
+
+Unless the existing application authentication flow requires immediate login/token handling.
+
+Follow the existing application architecture.
+
+Do not invent a new authentication flow if one already exists.
+
+---
+
+# 8. Food-Themed Animated Signup Design
+
+The signup page should have a **premium food-related animated visual experience**.
+
+The visual design should match:
+
+```text
+The Woven Cloud Kitchen
+```
+
+The page should feel:
+
+* Warm
+* Premium
+* Friendly
+* Food-focused
+* Modern
+* Clean
+* Trustworthy
+* Family/home-style
+* Professional
+
+Use the application's existing brand colors and theme.
+
+Preferred visual direction:
+
+```text
+Dark Forest Green
+Matte Gold
+Cream / Warm Background
+```
+
+Do not introduce unrelated colors that conflict with the existing brand system.
+
+---
+
+## Animated Food Graphics
+
+Add a food-related animated illustration/graphic area alongside the signup form.
+
+Possible visual concepts:
+
+* Friendly chef illustration
+* Cooking pot
+* Steaming food
+* Fresh vegetables
+* Rice/biryani bowl
+* Spoon and cooking utensils
+* Floating herbs
+* Food ingredients
+* Steam animation
+* Small food particles
+* Gentle floating ingredients
+* Cooking/kitchen atmosphere
+
+The animation should be **subtle and premium**, not distracting.
+
+Example animation sequence:
+
+```text
+Cooking pot
+    ↓
+Gentle steam rises
+    ↓
+Small herbs/ingredients float subtly
+    ↓
+Chef/food illustration has slight movement
+    ↓
+Loop smoothly
+```
+
+Avoid excessive bouncing, spinning, flashing, or distracting animations.
+
+---
+
+# 9. Signup Layout
+
+Desktop layout should preferably use:
+
+```text
+┌─────────────────────────────────────────────────────────┐
+│                                                         │
+│  Food / Kitchen Animation     Signup Form               │
+│                                                         │
+│  Chef / Cooking Pot          Create Your Account        │
+│  Steaming Food               Full Name                  │
+│  Floating Ingredients        Mobile Number              │
+│                              Alternate Mobile           │
+│  The Woven                   Email                      │
+│  Cloud Kitchen               Password                   │
+│                              Confirm Password            │
+│                              Terms                       │
+│                              Create Account              │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+The exact layout can follow the existing application's design system.
+
+The form should remain the primary focus.
+
+---
+
+# 10. Mobile Responsive Signup
+
+The signup page must work properly on:
+
+```text
+Desktop
+Laptop
+Tablet
+Mobile
+```
+
+On mobile:
+
+```text
+Brand / Food Animation
+        ↓
+Signup Form
+```
+
+The animated graphics should scale appropriately or be reduced/hidden on very small screens if necessary for usability and performance.
+
+Do not allow horizontal scrolling.
+
+---
+
+# 11. Customer Login Page
+
+Create a customer login page at:
+
+```text
+/login
+```
+
+The customer must be able to login using **either**:
+
+```text
+Email Address
+```
+
+or:
+
+```text
+Primary Mobile Number
+```
+
+Use a single identifier field.
+
+Example:
+
+```text
+Email or Mobile Number
+```
+
+---
+
+# 12. Login Form
+
+Fields:
+
+```text
+Email or Mobile Number
+Password
+```
+
+Example:
+
+```text
+Email or Mobile Number
+[ customer@example.com ]
+
+Password
+[ *************** ] 👁
+
+[ Login ]
+```
+
+The user should not need to select:
+
+```text
+Login with Email
+Login with Phone
+```
+
+Instead, automatically determine whether the identifier is an email address or phone number.
+
+---
+
+# 13. Login Validation
+
+Use:
+
+```text
+React Hook Form
++
+Zod
+```
+
+if already available in the project.
+
+Validate:
+
+### Email or Mobile Number
+
+* Required
+* Must be either a valid email address or valid primary mobile number
+* Trim whitespace
+* Normalize where appropriate
+
+### Password
+
+* Required
+
+Example validation:
+
+```text
+Email or Mobile Number is required
+```
+
+```text
+Enter a valid email address or mobile number
+```
+
+```text
+Password is required
+```
+
+---
+
+# 14. Login API
+
+Connect to:
+
+```http
+POST /api/auth/login
+```
+
+The API should receive:
+
+```json
+{
+  "identifier": "customer@example.com",
+  "password": "StrongPassword123"
+}
+```
+
+The backend should determine whether the identifier is:
+
+```text
+Email
+```
+
+or:
+
+```text
+Primary phone
+```
+
+If the existing backend API instead expects a different request structure, inspect and follow the actual backend contract.
+
+Do not modify the frontend API contract based on assumptions.
+
+---
+
+# 15. Login Error Handling
+
+Handle:
+
+```text
+Invalid credentials
+Account inactive
+Account not found
+Validation errors
+Network errors
+Server errors
+```
+
+Use user-friendly messages.
+
+Example:
+
+```text
+Invalid email/mobile number or password.
+```
+
+Do not reveal sensitive authentication information unnecessarily.
+
+Avoid messages such as:
+
+```text
+Email exists but password is wrong
+```
+
+when the backend follows a generic authentication error policy.
+
+---
+
+# 16. Login Loading State
+
+While login is in progress:
+
+* Disable login button
+* Show loading indicator
+* Prevent duplicate submissions
+* Preserve entered values
+
+Example:
+
+```text
+Signing in...
+```
+
+---
+
+# 17. Successful Login
+
+On successful login:
+
+1. Receive JWT/token from backend.
+2. Store authentication state using the application's existing authentication architecture.
+3. Store user information safely.
+4. Update Redux/auth state if Redux is already being used.
+5. Redirect based on role.
+
+Customer:
+
+```text
+/customer
+```
+
+or the existing customer home/dashboard route.
+
+Admin:
+
+```text
+/admin
+```
+
+or the existing admin dashboard route.
+
+Do not hardcode new dashboard routes if the application already defines them.
+
+---
+
+# 18. Login and Signup Navigation
+
+Signup page:
+
+```text
+Already have an account?
+Login
+```
+
+Clicking:
+
+```text
+Login
+```
+
+should navigate to:
+
+```text
+/login
+```
+
+Login page:
+
+```text
+Don't have an account?
+Sign up
+```
+
+Clicking:
+
+```text
+Sign up
+```
+
+should navigate to:
+
+```text
+/signup
+```
+
+Navigation should use the application's existing routing mechanism.
+
+---
+
+# 19. Food-Themed Animated Login Design
+
+The login page should use the same visual language as signup but have its own food-related animation.
+
+Possible concept:
+
+```text
+Cooking Pot
+      ↓
+Gentle Steam
+      ↓
+Floating Herbs / Ingredients
+      ↓
+Warm Kitchen Background
+      ↓
+Login Form
+```
+
+Alternative:
+
+```text
+Chef preparing a fresh meal
+        +
+Steam rising from freshly cooked food
+        +
+Subtle ingredient movement
+```
+
+The animation should communicate:
+
+```text
+Welcome back
+Fresh food is waiting
+Home-style meals
+Warmth
+Quality
+```
+
+Keep the animation elegant and lightweight.
+
+---
+
+# 20. Signup/Login Visual Consistency
+
+Signup and Login must look like part of the same application.
+
+Maintain consistency in:
+
+* Typography
+* Buttons
+* Input fields
+* Border radius
+* Shadows
+* Spacing
+* Icons
+* Brand colors
+* Animation style
+* Background treatment
+* Responsive behavior
+
+Only the food animation/content should change between the two pages.
+
+---
+
+# 21. Accessibility
+
+Ensure:
+
+* Proper labels for every input
+* Keyboard navigation
+* Visible focus states
+* Accessible password visibility buttons
+* Accessible validation messages
+* Appropriate ARIA attributes where necessary
+* Sufficient text contrast
+* Form errors are understandable
+* Animation does not prevent interaction
+
+Respect:
+
+```text
+prefers-reduced-motion
+```
+
+When reduced motion is enabled, minimize or disable decorative animations.
+
+---
+
+# 22. Performance
+
+Food animations are decorative and must not negatively impact page performance.
+
+Prefer:
+
+```text
+CSS animations
+SVG
+Lightweight illustrations
+```
+
+where appropriate.
+
+Avoid:
+
+* Large unnecessary video files
+* Heavy animation libraries unless already installed
+* Continuous expensive JavaScript animations
+* Excessive DOM animation
+
+Reuse existing animation libraries if the project already has one.
+
+---
+
+# 23. API / RTK Query Integration
+
+If the project uses Redux Toolkit and RTK Query:
+
+Create/reuse appropriate authentication endpoints, for example:
+
+```text
+signup
+login
+```
+
+Do not create duplicate API clients.
+
+Reuse:
+
+```text
+base API
+authentication handling
+API error handling
+```
+
+already present in the project.
+
+Follow existing API tagging/cache conventions.
+
+---
+
+# 24. TypeScript Types
+
+Create strongly typed request/response models.
+
+Example:
+
+```ts
+interface SignupRequest {
+  name: string;
+  email: string;
+  phone: string;
+  alternatePhone?: string;
+  password: string;
+  bio?: string;
+}
+```
+
+Login:
+
+```ts
+interface LoginRequest {
+  identifier: string;
+  password: string;
+}
+```
+
+Do not use:
+
+```ts
+any
+```
+
+for API responses, form values, errors, or authentication state.
+
+Use the actual backend response types where available.
+
+---
+
+# 25. Route Protection
+
+After login, authenticated users should not unnecessarily access:
+
+```text
+/login
+/signup
+```
+
+If the existing application has protected/public route handling, integrate with it.
+
+Unauthenticated users attempting to access protected customer/admin pages should be redirected to:
+
+```text
+/login
+```
+
+Do not rely on frontend route protection for security.
+
+Backend authorization remains the source of truth.
+
+---
+
+# 26. Testing
+
+Add/update frontend tests where the project already has a testing framework.
+
+Verify:
+
+### Signup
+
+* [ ] Signup page renders
+* [ ] All required fields render
+* [ ] Alternate mobile field renders
+* [ ] Optional bio field renders if implemented
+* [ ] Required validation works
+* [ ] Invalid email rejected
+* [ ] Invalid phone rejected
+* [ ] Invalid alternate phone rejected
+* [ ] Alternate phone cannot equal primary phone
+* [ ] Password validation works
+* [ ] Confirm password validation works
+* [ ] Password visibility works
+* [ ] Terms/consent validation works if required
+* [ ] Signup API called with correct payload
+* [ ] Loading state works
+* [ ] Duplicate email error displayed
+* [ ] Duplicate mobile error displayed
+* [ ] Successful signup message displayed
+* [ ] Redirect to login works
+
+### Login
+
+* [ ] Login page renders
+* [ ] Email login works
+* [ ] Mobile-number login works
+* [ ] Invalid identifier validation works
+* [ ] Password validation works
+* [ ] Password visibility works
+* [ ] Loading state works
+* [ ] Invalid credentials handled
+* [ ] Successful login stores authentication state
+* [ ] Customer redirected correctly
+* [ ] Admin redirected correctly
+* [ ] Login/signup navigation works
+
+---
+
+# 27. Visual Quality Requirements
+
+The final implementation should feel like a **real production food-ordering application**, not a generic authentication template.
+
+The design should communicate:
+
+```text
+Fresh Food
+Home-style Cooking
+Trust
+Warmth
+Premium Quality
+Simple Ordering
+```
+
+Use food-related animated graphics such as:
+
+```text
+Chef
+Cooking Pot
+Biryani / Rice Bowl
+Fresh Vegetables
+Herbs
+Steam
+Kitchen Utensils
+```
+
+Keep the animation polished and subtle.
+
+Do not use generic technology-themed graphics such as:
+
+```text
+abstract blobs
+technology circuits
+coding illustrations
+generic SaaS graphics
+```
+
+The authentication pages should immediately feel connected to **The Woven Cloud Kitchen**.
+
+---
+
+# 28. Important Implementation Rules
+
+Before coding:
+
+1. Inspect the existing frontend.
+2. Identify existing authentication components.
+3. Identify existing routing.
+4. Identify existing form components.
+5. Identify existing validation.
+6. Identify existing API/RTK Query setup.
+7. Identify existing theme and SCSS/BEM conventions.
+8. Reuse existing components wherever possible.
+
+Do not:
+
+* Duplicate API clients
+* Duplicate form components
+* Duplicate authentication logic
+* Introduce unnecessary dependencies
+* Change unrelated pages
+* Break existing routes
+* Use `any`
+* Hardcode API URLs
+* Hardcode authentication secrets
+* Trust frontend role information for authorization
+
+---
+
+# 29. Final Verification
+
+Before declaring Story 1.1 complete, verify:
+
+* [ ] `/signup` works
+* [ ] `/login` works
+* [ ] Customer signup works
+* [ ] Primary mobile number is required
+* [ ] Alternate mobile number is optional
+* [ ] Alternate mobile validation works
+* [ ] Email validation works
+* [ ] Password validation works
+* [ ] Confirm password validation works
+* [ ] Password visibility toggle works
+* [ ] Signup loading state works
+* [ ] Duplicate email handling works
+* [ ] Duplicate mobile handling works
+* [ ] Signup success handling works
+* [ ] Signup redirects to login
+* [ ] Login supports email
+* [ ] Login supports primary mobile number
+* [ ] Login loading state works
+* [ ] Login error handling works
+* [ ] Successful login updates auth state
+* [ ] Customer redirect works
+* [ ] Admin redirect works
+* [ ] Signup/Login navigation works
+* [ ] Food-themed animation is implemented
+* [ ] Animation is responsive
+* [ ] Reduced-motion preference is respected
+* [ ] UI is responsive on mobile/tablet/desktop
+* [ ] Accessibility requirements are satisfied
+* [ ] Existing design system is followed
+* [ ] TypeScript has no `any`
+* [ ] Lint passes
+* [ ] Tests pass
+* [ ] Build passes
+
+---
+
+# 30. Final Report
+
+At the end, provide a concise implementation report containing:
+
+1. Files created
+2. Files modified
+3. Signup components created/updated
+4. Login components created/updated
+5. API endpoints integrated
+6. Validation implemented
+7. Authentication state changes
+8. Food animation implementation
+9. Responsive behavior
+10. Tests added/updated
+11. Commands executed
+12. Lint/test/build results
+13. Any remaining issues or TODOs
+
+Only mark **Story 1.1 complete** if the implementation has actually been tested and verified.

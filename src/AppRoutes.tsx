@@ -15,6 +15,7 @@ const ForbiddenPage = lazy(() => import('pages/Forbidden/Forbidden.tsx'));
 const DashboardPage = lazy(() => import('pages/Admin/Dashboard/Dashboard.tsx'));
 const CustomersPage = lazy(() => import('pages/Admin/Customers/Customers.tsx'));
 const MenuPage = lazy(() => import('pages/Admin/Menu/Menu.tsx'));
+const MenuItemPage = lazy(() => import('pages/Admin/MenuItem/MenuItem.tsx'));
 const DailyMenuPage = lazy(() => import('pages/Admin/DailyMenu/DailyMenu.tsx'));
 const OrdersPage = lazy(() => import('pages/Admin/Orders/Orders.tsx'));
 const PaymentsPage = lazy(() => import('pages/Admin/Payments/Payments.tsx'));
@@ -117,6 +118,22 @@ export const AppRoutes = [
           adminChild(ROUTES.ADMIN_DASHBOARD, <DashboardPage />),
           adminChild(ROUTES.ADMIN_CUSTOMERS, <CustomersPage />),
           adminChild(ROUTES.ADMIN_MENU, <MenuPage />),
+          {
+            path: ROUTES.ADMIN_MENU_NEW,
+            element: (
+              <ProtectedRoute allowedRoles={rolesFor(ROUTES.ADMIN_MENU)}>
+                <MenuItemPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: ROUTES.ADMIN_MENU_EDIT,
+            element: (
+              <ProtectedRoute allowedRoles={rolesFor(ROUTES.ADMIN_MENU)}>
+                <MenuItemPage />
+              </ProtectedRoute>
+            ),
+          },
           adminChild(ROUTES.ADMIN_DAILY_MENU, <DailyMenuPage />),
           adminChild(ROUTES.ADMIN_ORDERS, <OrdersPage />),
           adminChild(ROUTES.ADMIN_PAYMENTS, <PaymentsPage />),

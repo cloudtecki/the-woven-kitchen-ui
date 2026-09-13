@@ -1,0 +1,489 @@
+# Sprint 2 — Role-Based Sidebar & Route Access
+
+## Objective
+
+Implement the application sidebar navigation and route protection based on the **authenticated user's role**.
+
+Use the existing backend authentication/current-user API and the Figma design as the source of truth.
+
+Figma:
+https://www.figma.com/make/6nmmHgLKe9lqagoKcyoG5p/Design-System-and-Screens?code-node-id=0-6&p=f&t=uTgP6VBqG8xigwYr-0&fullscreen=1
+
+---
+
+# Step 1 — Inspect Existing Authentication
+
+Before making changes:
+
+1. Inspect the existing frontend authentication implementation.
+2. Inspect the backend authentication implementation.
+3. Identify the current-user/profile API.
+4. Confirm the exact API response structure.
+5. Identify the field containing the user's role.
+6. Identify all roles currently supported by the backend.
+7. Inspect the existing route configuration.
+8. Inspect the existing Redux/RTK Query authentication state.
+9. Inspect existing shared layout/sidebar/navigation components.
+
+Do not guess role names.
+
+Do not hardcode a role that does not exist in the backend.
+
+Do not create a duplicate authentication mechanism.
+
+---
+
+# Step 2 — Create Role-Based Navigation Configuration
+
+Create a centralized navigation configuration instead of putting role conditions directly inside the Sidebar component.
+
+The navigation configuration should contain information such as:
+
+```text
+label
+path
+icon
+allowedRoles
+```
+
+Example structure:
+
+```ts
+interface NavigationItem {
+  label: string;
+  path: string;
+  icon: React.ReactNode;
+  allowedRoles: UserRole[];
+}
+```
+
+Use the actual `UserRole` type/value from the project.
+
+Example concept:
+
+```text
+Dashboard       → allowed roles
+Customers       → allowed roles
+Menu            → allowed roles
+Daily Menu      → allowed roles
+Orders          → allowed roles
+Payments        → allowed roles
+Deliveries      → allowed roles
+Expenses        → allowed roles
+Reports         → allowed roles
+Settings        → allowed roles
+```
+
+Do not blindly assign all routes to all roles.
+
+Determine the correct permissions based on the existing backend role/authorization model and the requirements of the application.
+
+---
+
+# Step 3 — Role-Based Sidebar
+
+Implement the Sidebar according to the Figma design.
+
+The Sidebar must dynamically display navigation items based on the authenticated user's role.
+
+For example:
+
+```text
+Authenticated User
+        ↓
+Current User API
+        ↓
+User Role
+        ↓
+Navigation Configuration
+        ↓
+Filter allowed navigation items
+        ↓
+Render Sidebar
+```
+
+### Requirements
+
+* Display only navigation items allowed for the current user's role.
+* Do not display unauthorized menu items.
+* Highlight the currently active route.
+* Support nested routes if required.
+* Use the icons from the Figma design/project icon system.
+* Preserve the Figma spacing, typography, sizing, and styling.
+* Sidebar must be reusable.
+* Do not duplicate navigation code for every role.
+
+---
+
+# Step 4 — Role-Based Route Protection
+
+Sidebar filtering alone is NOT sufficient for authorization.
+
+Implement route-level role protection.
+
+A user must not be able to access an unauthorized page simply by manually entering its URL.
+
+Example:
+
+```text
+/admin/orders
+/admin/payments
+/admin/settings
+```
+
+If the authenticated user's role does not have access to a route:
+
+* Do not render the protected page.
+* Redirect to an appropriate authorized page OR display the existing application's Forbidden/Access Denied page if one exists.
+* Do not expose unauthorized functionality.
+
+---
+
+# Step 5 — Protected Route Structure
+
+Use a reusable route guard/middleware-style component.
+
+For example:
+
+```text
+ProtectedRoute
+    ↓
+Authentication Check
+    ↓
+Role Authorization Check
+    ↓
+Allow Route
+OR
+Redirect / Access Denied
+```
+
+Conceptually:
+
+```tsx
+<ProtectedRoute allowedRoles={[...]}>
+    <Page />
+</ProtectedRoute>
+```
+
+Use the project's existing routing architecture instead of introducing an unnecessary routing library or completely rewriting the router.
+
+---
+
+# Step 6 — Admin Routes
+
+Implement the Admin application routes using the navigation requirements from Sprint 2.
+
+```text
+/admin
+/admin/dashboard
+/admin/customers
+/admin/menu
+/admin/daily-menu
+/admin/orders
+/admin/payments
+/admin/deliveries
+/admin/expenses
+/admin/reports
+/admin/settings
+```
+
+If the project already has established route paths, preserve them unless there is a strong reason to change them.
+
+Do not create duplicate routes.
+
+---
+
+# Step 7 — Role-Based Layout
+
+The application layout should use the authenticated user's role.
+
+Conceptually:
+
+```text
+App
+ └── Authentication
+      └── Current User
+           └── Role
+                └── Protected Route
+                     └── Application Layout
+                          ├── Header
+                          ├── Sidebar
+                          └── Page Content
+```
+
+The Sidebar and route authorization must use the **same role/permission source**.
+
+Do not maintain separate hardcoded role logic in multiple places.
+
+---
+
+# Step 8 — Username and Role Display
+
+Use the current-user API response.
+
+Header/profile section should dynamically display:
+
+```text
+Username
+Role
+```
+
+Do not hardcode:
+
+```text
+Admin
+Administrator
+John
+User
+```
+
+The displayed values must come from authenticated user data.
+
+---
+
+# Step 9 — Logout
+
+Keep the existing logout implementation if one already exists.
+
+After logout:
+
+1. Clear authentication/session information.
+2. Clear current-user state.
+3. Clear relevant RTK Query cache if required.
+4. Redirect to Login.
+5. Prevent access to protected routes.
+
+After logout, directly entering an Admin URL must not provide access.
+
+---
+
+# Step 10 — Loading & Authentication States
+
+Handle the following states correctly:
+
+### Loading
+
+While the current-user API is loading:
+
+```text
+Do not incorrectly render the unauthorized sidebar.
+Do not redirect prematurely.
+Display the application's appropriate loading state.
+```
+
+### Authenticated
+
+After user information is successfully loaded:
+
+```text
+Read role
+↓
+Build authorized navigation
+↓
+Render authorized routes
+```
+
+### Unauthorized
+
+If the user is authenticated but does not have permission:
+
+```text
+Do not show unauthorized navigation.
+Do not allow unauthorized route access.
+Redirect/display Access Denied according to the existing application pattern.
+```
+
+### Unauthenticated
+
+If the authentication token/session is missing or invalid:
+
+```text
+Redirect to Login.
+```
+
+---
+
+# Step 11 — Figma Implementation
+
+Use the provided Figma design as the visual source of truth.
+
+Match:
+
+* Sidebar dimensions
+* Header dimensions
+* Logo/branding
+* Navigation spacing
+* Icons
+* Active menu state
+* Hover state
+* Selected state
+* User information
+* Role display
+* Logout UI
+* Typography
+* Colors
+* Borders
+* Border radius
+* Shadows
+* Responsive behavior
+
+Do not redesign the UI unnecessarily.
+
+---
+
+# Step 12 — Responsive Sidebar
+
+Implement responsive behavior based on Figma.
+
+Desktop:
+
+```text
+Sidebar + Header + Content
+```
+
+Tablet/mobile:
+
+```text
+Collapsed/Drawer navigation as defined by design
+```
+
+Requirements:
+
+* No horizontal overflow.
+* Navigation remains accessible.
+* Sidebar does not cover important content incorrectly.
+* Header remains usable.
+* Content must not be clipped.
+* Avoid fixed heights that hide page content.
+
+---
+
+# Step 13 — Technical Requirements
+
+Follow the existing project architecture.
+
+Use:
+
+* React
+* TypeScript
+* Redux Toolkit
+* RTK Query
+* Ant Design
+* SCSS
+* BEM
+
+### Strict TypeScript
+
+* No `any`.
+* No unnecessary type assertions.
+* Define proper `User`, `UserRole`, `NavigationItem`, and route types where required.
+* Reuse existing types if they already exist.
+
+### Reusability
+
+Prefer:
+
+```text
+ProtectedRoute
+RoleGuard
+AdminLayout
+AdminSidebar
+NavigationConfig
+```
+
+or equivalent existing project components.
+
+Do not create duplicate components if equivalent components already exist.
+
+---
+
+# Step 14 — Important Authorization Rule
+
+**Do not rely on hiding Sidebar menu items as authorization.**
+
+The system must enforce authorization at the route level as well.
+
+For example:
+
+```text
+User has no permission for /admin/reports
+
+↓
+Reports menu is not displayed
+
+AND
+
+↓
+Direct navigation to /admin/reports
+
+↓
+Route guard blocks access
+```
+
+Both conditions are required.
+
+---
+
+# Step 15 — Validation
+
+After implementation, test every supported role.
+
+For each role verify:
+
+### Sidebar
+
+* [ ] Correct navigation items displayed.
+* [ ] Unauthorized navigation items hidden.
+* [ ] Active route works.
+* [ ] Icons are correct.
+* [ ] Responsive behavior works.
+
+### Routes
+
+* [ ] Authorized routes are accessible.
+* [ ] Unauthorized routes are blocked.
+* [ ] Direct URL navigation is protected.
+* [ ] Unauthenticated users are redirected to Login.
+* [ ] Unauthorized users receive the correct redirect/access-denied behavior.
+
+### User Information
+
+* [ ] Username comes from current-user API.
+* [ ] Role comes from current-user API.
+* [ ] No hardcoded user information.
+
+### Logout
+
+* [ ] Logout clears authentication.
+* [ ] Current-user state is cleared.
+* [ ] User is redirected to Login.
+* [ ] Protected routes cannot be accessed after logout.
+
+### Code Quality
+
+* [ ] TypeScript passes.
+* [ ] ESLint passes.
+* [ ] No `any`.
+* [ ] No console errors.
+* [ ] No duplicate route definitions.
+* [ ] No duplicate authentication logic.
+* [ ] No unnecessary refactoring.
+
+---
+
+# Final Requirement
+
+Before completing the task, provide a concise implementation report containing:
+
+1. Existing roles discovered from the backend.
+2. Current-user API endpoint discovered.
+3. Navigation items and which roles can access them.
+4. Routes created/updated.
+5. Components created/updated.
+6. Authentication/authorization changes.
+7. Any assumptions made.
+8. Validation/testing performed.
+
+Do not invent missing permissions.
+
+If the backend does not clearly define which roles can access a particular navigation item, stop and report the ambiguity rather than silently assuming permissions.

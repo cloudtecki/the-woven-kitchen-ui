@@ -9,6 +9,8 @@ export const ROUTES = {
     ADMIN_DASHBOARD: '/admin/dashboard',
     ADMIN_CUSTOMERS: '/admin/customers',
     ADMIN_MENU: '/admin/menu',
+    ADMIN_MENU_NEW: '/admin/menu/new',
+    ADMIN_MENU_EDIT: '/admin/menu/:id/edit',
     ADMIN_DAILY_MENU: '/admin/daily-menu',
     ADMIN_ORDERS: '/admin/orders',
     ADMIN_PAYMENTS: '/admin/payments',
