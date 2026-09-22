@@ -51,6 +51,14 @@
     border-radius: 12px;
     padding: 48px 16px;
   }
+
+  &__skeleton-card {
+    background: #fff;
+    border: 1px solid var(--color-base-neutral-100, #dedee2);
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 320px;
+  }
 }
 
 @media (max-width: 576px) {

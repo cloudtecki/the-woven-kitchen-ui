@@ -1,32 +1,49 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { App as AntApp, Empty, Input } from 'antd';
+import { App as AntApp, Input, Skeleton } from 'antd';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import ConfirmModal from 'components/custom/ConfirmModal';
+import EmptyMenuState from 'components/custom/EmptyMenuState';
 import MenuCard from 'components/custom/MenuCard';
 import TwkButton from 'components/custom/TwkButton';
+import { useGetMenuItemsQuery } from 'core/api/menu/queries';
+import { useDeleteMenuItemMutation } from 'core/api/menu/mutations';
 import { ROUTES } from 'core/base/const/routes';
 import type { MenuItem } from 'core/base/type/menu';
-import { loadMenuItems, removeMenuItem } from 'pages/Admin/Menu/menu.storage';
+import { mapApiMenuItemToUi, rememberCategories } from 'core/service/menu.service';
 
 import './Menu.scss';
 
 const EXIT_MS = 220;
 
 /**
- * Menu Items listing (UI-only). Cards animate in staggered,
- * lift on hover, slide in on add, fade+collapse on delete.
+ * Menu Items listing backed by the Menu API. Cards animate in staggered,
+ * lift on hover, slide in on add, fade+collapse on delete. An animated
+ * empty state replaces the grid when there are no items.
  */
 const MenuPage = () => {
     const { t } = useTranslation(['admin']);
     const { message } = AntApp.useApp();
     const navigate = useNavigate();
 
-    const [items, setItems] = useState<MenuItem[]>(() => loadMenuItems());
+    const {
+        data: menuResponse,
+        isLoading,
+        isFetching,
+        isError,
+    } = useGetMenuItemsQuery({ page: 1, limit: 100 });
+    const [deleteMenuItem, { isLoading: isDeleting }] = useDeleteMenuItemMutation();
+
     const [query, setQuery] = useState('');
     const [deleteTarget, setDeleteTarget] = useState<MenuItem | null>(null);
     const [leavingId, setLeavingId] = useState<string | null>(null);
+
+    const items = useMemo<MenuItem[]>(() => {
+        const apiItems = menuResponse?.data ?? [];
+        rememberCategories(apiItems);
+        return apiItems.map(mapApiMenuItemToUi);
+    }, [menuResponse]);
 
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
@@ -42,19 +59,25 @@ const MenuPage = () => {
     const goEdit = (item: MenuItem) =>
         navigate(ROUTES.ADMIN_MENU_EDIT.replace(':id', item.id));
 
-    const confirmDelete = () => {
-        if (!deleteTarget) return;
+    const confirmDelete = async () => {
+        if (!deleteTarget || isDeleting) return;
         const id = deleteTarget.id;
         setLeavingId(id);
-        // Let the exit animation play before removing from the grid.
-        window.setTimeout(() => {
-            const next = removeMenuItem(id);
-            setItems(next);
+        // Let the exit animation play before calling the API.
+        await new Promise((resolve) => window.setTimeout(resolve, EXIT_MS));
+        const result = await deleteMenuItem(id);
+        if (!result.data) {
+            // Keep the item in the list; do not silently fail.
             setLeavingId(null);
-            setDeleteTarget(null);
-            message.success(t('menu.deletedToast'));
-        }, EXIT_MS);
+            message.error(t('menu.deleteFailed'));
+            return;
+        }
+        setLeavingId(null);
+        setDeleteTarget(null);
+        message.success(t('menu.deletedToast'));
     };
+
+    const loading = isLoading || isFetching;
 
     return (
         <div className="twk-menu-page">
@@ -80,8 +103,28 @@ const MenuPage = () => {
                 />
             </div>
 
-            {filtered.length === 0 ? (
-                <Empty description={t('menu.emptyList')} className="twk-menu-page__empty" />
+            {loading ? (
+                <div className="twk-menu-page__grid" aria-busy="true" aria-label={t('menu.title')}>
+                    {Array.from({ length: 6 }).map((_, idx) => (
+                        <div key={idx} className="twk-menu-page__skeleton-card">
+                            <Skeleton active paragraph={{ rows: 4 }} />
+                        </div>
+                    ))}
+                </div>
+            ) : isError ? (
+                <EmptyMenuState
+                    title={t('menu.loadFailed')}
+                    description={t('menu.emptyHint')}
+                    actionLabel={t('menu.addItem')}
+                    onAction={goAdd}
+                />
+            ) : filtered.length === 0 ? (
+                <EmptyMenuState
+                    title={t('menu.emptyTitle')}
+                    description={t('menu.emptyHint')}
+                    actionLabel={`+ ${t('menu.addItem')}`}
+                    onAction={goAdd}
+                />
             ) : (
                 <div className="twk-menu-page__grid">
                     {filtered.map((item, idx) => (
@@ -102,7 +145,10 @@ const MenuPage = () => {
                 title={t('menu.deleteTitle')}
                 body={deleteTarget ? t('menu.deleteBody', { name: deleteTarget.name }) : ''}
                 confirmLabel={t('menu.confirmDelete')}
-                onCancel={() => setDeleteTarget(null)}
+                loading={isDeleting}
+                onCancel={() => {
+                    if (!isDeleting) setDeleteTarget(null);
+                }}
                 onConfirm={confirmDelete}
             />
         </div>

@@ -9,6 +9,10 @@ export enum APIEndpoints {
     CREATE_USER = '/user/create',
     GET_PRODUCTS = 'https://api.escuelajs.co/api/v1/products',
     GET_HEALTH = '/api/health',
+    MENU = '/api/menu',
+    MENU_BY_ID = '/api/menu/{menuId}',
+    MENU_IMAGE = '/api/menu/{menuId}/image',
+    GET_CATEGORIES = '/api/categories',
 }
 
 export enum HttpStatusCodes {

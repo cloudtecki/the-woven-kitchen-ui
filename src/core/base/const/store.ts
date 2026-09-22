@@ -3,4 +3,6 @@ export const STORE_TAGS = {
     HOME: 'Home',
     PRODUCT: 'Product',
     HEALTH: 'Health',
+    MENU: 'Menu',
+    CATEGORIES: 'Categories',
 };

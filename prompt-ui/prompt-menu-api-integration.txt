@@ -1,0 +1,54 @@
+# Prompt: Menu API Integration in Frontend (UI)
+
+The backend APIs for Menu Item Create / List / Edit / Delete are already implemented (previous PR). This PR is **frontend-only**: replace the static/mock data in the existing Menu UI with real API calls, and add an animated **empty state** for when there are no menu items.
+
+## Repo
+- **Frontend:** `D:\real-time-project\twk\frontend-twk-admin`
+
+**Follow the existing folder structure, naming conventions, API-calling pattern (service layer/hooks, e.g. axios instance), state management, loading/error handling, and toast/notification pattern already used elsewhere in this repo.** Do not introduce a new architecture, folder layout, or library — match what's already there. Scan the repo first to see how other resources/pages already call APIs before writing new code.
+
+## 1. API Service Layer
+- Add API service functions (matching the existing service/hook naming pattern already used in the repo) for the Menu Item endpoints already built on the backend:
+  - `getMenuItems()`
+  - `getMenuItemById(id)`
+  - `createMenuItem(payload, isDraft)`
+  - `updateMenuItem(id, payload)`
+  - `deleteMenuItem(id)`
+  - `uploadMenuItemImage(id, file)` (if the backend exposes a separate upload endpoint)
+- Use the same base URL/config, auth headers, and error-handling wrapper already used by other services in the repo.
+
+## 2. List Page Integration
+- Replace mock data with `getMenuItems()` on page load.
+- Show a loading state (skeleton/spinner) consistent with other list pages in the app while fetching.
+- Render each card's Active/Inactive badge and Nutrition Approved/Pending badge from the real API response fields.
+- Show the OFFER ribbon only when a variant has an `offerPrice`.
+
+## 3. No Data (Empty State) — Animated Component
+When `getMenuItems()` returns an empty list, show a dedicated **animated "No Menu Items" component** in place of the card grid:
+- Illustration/icon (e.g. an empty plate, bowl, or food-tray icon/SVG) that gently animates on load — subtle fade-in + scale-up, or a soft looping motion (e.g. a slight bounce/float), consistent in tone with the rest of the app's animation style.
+- Heading: "No Menu Items Yet".
+- Supporting text: short line encouraging action, e.g. "Add your first menu item to get started."
+- Primary button: "+ Add Menu Item" that opens the existing Add Menu Item flow — same action as the button already on the list page header.
+- Keep this as its own reusable component (e.g. `EmptyMenuState`) so it follows the existing component structure/conventions in the repo, and can be reused for other "no data" cases later if needed.
+- Animation should be lightweight (CSS/keyframes or the existing animation library already used in the repo, if any) — no heavy dependencies just for this.
+
+## 4. Create Page Integration
+- On **Save Draft**: call `createMenuItem(payload, isDraft: true)`. Show success/error toast using the existing toast pattern.
+- On **Save & Continue**: run existing client-side validation first; if valid, call `createMenuItem(payload, isDraft: false)`; on success, move to the Nutrition tab and show a success toast; on failure, surface backend validation errors on the relevant fields (Item Name, Category, Variant price) instead of a generic alert.
+- Wire the Food Image drag-and-drop field to `uploadMenuItemImage` (or include the file in the create/update payload if the backend handles it inline — check backend contract).
+
+## 5. Edit Page Integration
+- On mount, call `getMenuItemById(id)` and pre-fill all Basic Info fields, Status, and the Nutrition summary chips.
+- Show a loading state while fetching before rendering the form.
+- On save, call `updateMenuItem(id, payload)`; show success/error toast; surface field-level validation errors the same way as the Create page.
+
+## 6. Delete Flow Integration
+- On confirming the existing delete confirmation modal, call `deleteMenuItem(id)`.
+- On success: animate the card out of the grid (per the existing card-animation spec) and remove it from state; show a success toast.
+- On failure: keep the item in the list and show an error toast; do not silently fail.
+- If deleting the last remaining item, transition into the animated **No Menu Items** empty state described above.
+
+## 7. Out of Scope
+- No changes to visual design, layout, or animations already implemented for the card grid/forms beyond the new empty-state component described above.
+- No implementation of the AI nutrition generation logic — button remains a placeholder.
+- No backend changes in this PR.

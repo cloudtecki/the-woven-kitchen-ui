@@ -72,6 +72,15 @@ export class ServiceBase {
         return this.makeRequest<T>(Axios.put(url, data, config), responseSchema);
     }
 
+    protected static patch<T, U>(
+        url: string,
+        data: U,
+        responseSchema: AnySchema,
+        config?: AxiosRequestConfig,
+    ): Promise<ApiIResult<T>> {
+        return this.makeRequest<T>(Axios.patch(url, data, config), responseSchema);
+    }
+
     protected static delete<T>(
         url: string,
         responseSchema: AnySchema,
