@@ -74,7 +74,7 @@
 
   &__top {
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 8px;
   }
@@ -89,10 +89,36 @@
     white-space: nowrap;
   }
 
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
   &__category {
     font-size: 12px;
     color: var(--color-base-neutral-500, #7f7f91);
     white-space: nowrap;
+  }
+
+  &__badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 1px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+
+    &--veg {
+      color: #1d7a3f;
+      background: #e7f5ec;
+    }
+
+    &--nonveg {
+      color: #b42318;
+      background: #fdecea;
+    }
   }
 
   &__desc {
@@ -114,9 +140,27 @@
     margin-top: auto;
   }
 
+  &__prices {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
   &__price {
     font-size: 15px;
     font-weight: 800;
+    color: var(--color-base-neutral-900, #2e2e38);
+
+    &--struck {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-base-neutral-500, #7f7f91);
+      text-decoration: line-through;
+    }
+
+    &--offer {
+      color: var(--color-orange-300, #ee8300);
+    }
   }
 
   &__actions {

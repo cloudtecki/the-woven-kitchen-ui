@@ -9,17 +9,37 @@ import {
 } from '@ant-design/icons';
 import { App as AntApp, Input, Select, Tag, Tooltip } from 'antd';
 import TwkButton from 'components/custom/TwkButton';
-import type { MenuFormMode, MenuItem, MenuItemStatus, MenuVariant } from 'core/base/type/menu';
+import type {
+    FoodType,
+    MenuFormMode,
+    MenuItem,
+    MenuItemStatus,
+    MenuVariant,
+} from 'core/base/type/menu';
 import { MENU_CATEGORIES } from 'core/base/type/menu';
 
 import './MenuForm.scss';
 
+export type MenuSaveContext = {
+    imageFile?: File;
+};
+
+export type CategoryOption = {
+    value: string;
+    label: string;
+};
+
 export type MenuFormProps = {
     mode: MenuFormMode;
     initialValue?: MenuItem;
+    /** Server-backed categories for the dropdown; falls back to MENU_CATEGORIES when empty. */
+    categoryOptions?: CategoryOption[];
     onBack: () => void;
-    onSaveDraft: (item: MenuItem) => void;
-    onSaveContinue: (item: MenuItem) => void;
+    onSaveDraft: (item: MenuItem, ctx?: MenuSaveContext) => void | Promise<void>;
+    onSaveContinue: (item: MenuItem, ctx?: MenuSaveContext) => void | Promise<void>;
+    saving?: boolean;
+    serverErrors?: { name?: string; category?: string; variants?: string; foodType?: string };
+    onClearServerErrors?: () => void;
 };
 
 type TabKey = 'basic' | 'nutrition';
@@ -36,6 +56,7 @@ const toMenuItem = (
     fields: {
         name: string;
         category: string;
+        foodType: FoodType;
         description: string;
         servingSize: string;
         ingredients: string[];
@@ -48,6 +69,7 @@ const toMenuItem = (
     id: base?.id ?? `menu-${Date.now()}`,
     name: fields.name.trim(),
     category: fields.category,
+    foodType: fields.foodType,
     description: fields.description.trim() || undefined,
     servingSize: fields.servingSize.trim() || undefined,
     ingredients: fields.ingredients,
@@ -60,9 +82,21 @@ const toMenuItem = (
 /**
  * Shared Add/Edit Menu Item form. `mode` controls title text and
  * whether fields start empty (create) or pre-filled (edit).
- * UI-only: no backend calls; parents persist to local list state.
+ * Persistence is delegated to parents via `onSaveDraft`/`onSaveContinue`
+ * (wired to the Menu API); `serverErrors` surfaces backend validation
+ * failures on the relevant fields.
  */
-const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: MenuFormProps) => {
+const MenuForm = ({
+    mode,
+    initialValue,
+    categoryOptions,
+    onBack,
+    onSaveDraft,
+    onSaveContinue,
+    saving = false,
+    serverErrors,
+    onClearServerErrors,
+}: MenuFormProps) => {
     const { t } = useTranslation(['admin']);
     const { message } = AntApp.useApp();
     const fileRef = useRef<HTMLInputElement>(null);
@@ -70,6 +104,7 @@ const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: M
     const [activeTab, setActiveTab] = useState<TabKey>('basic');
     const [name, setName] = useState(initialValue?.name ?? '');
     const [category, setCategory] = useState(initialValue?.category ?? '');
+    const [foodType, setFoodType] = useState<FoodType>(initialValue?.foodType ?? 'Non-Veg');
     const [description, setDescription] = useState(initialValue?.description ?? '');
     const [servingSize, setServingSize] = useState(initialValue?.servingSize ?? '');
     const [ingredients, setIngredients] = useState<string[]>(initialValue?.ingredients ?? []);
@@ -79,12 +114,18 @@ const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: M
         initialValue?.variants?.length ? initialValue.variants : [newVariant()],
     );
     const [imageUrl, setImageUrl] = useState<string | undefined>(initialValue?.imageUrl);
+    const [imageFile, setImageFile] = useState<File | undefined>(undefined);
     const [status, setStatus] = useState<MenuItemStatus>(
         initialValue?.status && initialValue.status !== 'Draft'
             ? initialValue.status
             : 'Active',
     );
-    const [errors, setErrors] = useState<{ name?: string; category?: string; variants?: string }>({});
+    const [errors, setErrors] = useState<{
+        name?: string;
+        category?: string;
+        variants?: string;
+        foodType?: string;
+    }>({});
     const [touched, setTouched] = useState(false);
 
     const subtitle = useMemo(() => {
@@ -96,6 +137,7 @@ const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: M
         const next: typeof errors = {};
         if (!name.trim()) next.name = t('menu.itemNameRequired');
         if (!category) next.category = t('menu.categoryRequired');
+        if (!foodType) next.foodType = t('menu.foodTypeRequired');
         const hasPricedVariant = variants.some((v) => v.price.trim());
         if (!hasPricedVariant) next.variants = t('menu.variantRequired');
         setErrors(next);
@@ -105,6 +147,7 @@ const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: M
     const collect = () => ({
         name,
         category,
+        foodType,
         description,
         servingSize,
         ingredients,
@@ -113,19 +156,29 @@ const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: M
         status,
     });
 
-    const handleSaveDraft = () => {
+    const handleSaveDraft = async () => {
+        if (saving) return;
         const item = toMenuItem(initialValue, collect(), 'Draft');
-        onSaveDraft(item);
-        message.success(t('menu.draftSavedToast'));
+        try {
+            await onSaveDraft(item, { imageFile });
+            message.success(t('menu.draftSavedToast'));
+        } catch {
+            // Parent surfaces the failure (toast + serverErrors); stay on the form.
+        }
     };
 
-    const handleSaveContinue = () => {
+    const handleSaveContinue = async () => {
+        if (saving) return;
         setTouched(true);
         if (!validate()) return;
         const item = toMenuItem(initialValue, collect());
-        onSaveContinue(item);
-        message.success(t('menu.savedToast'));
-        setActiveTab('nutrition');
+        try {
+            await onSaveContinue(item, { imageFile });
+            message.success(t('menu.savedToast'));
+            setActiveTab('nutrition');
+        } catch {
+            // Parent surfaces the failure (toast + serverErrors); stay on Basic Info.
+        }
     };
 
     const addIngredient = () => {
@@ -142,6 +195,7 @@ const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: M
 
     const updateVariant = (id: string, patch: Partial<MenuVariant>) => {
         setVariants((prev) => prev.map((v) => (v.id === id ? { ...v, ...patch } : v)));
+        clearServerError();
         if (touched) validate();
     };
 
@@ -151,12 +205,26 @@ const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: M
 
     const handleImageFile = (file: File | undefined) => {
         if (!file) return;
-        const url = URL.createObjectURL(file);
-        setImageUrl(url);
+        if (imageUrl?.startsWith('blob:')) URL.revokeObjectURL(imageUrl);
+        setImageFile(file);
+        setImageUrl(URL.createObjectURL(file));
     };
 
     const showGenerateSoon = () => {
         message.info(t('menu.comingSoon'));
+    };
+
+    // Backend validation failures (set by the parent after an API call)
+    // are shown alongside client-side errors.
+    const visibleErrors = {
+        name: (touched && errors.name) || serverErrors?.name,
+        category: (touched && errors.category) || serverErrors?.category,
+        variants: (touched && errors.variants) || serverErrors?.variants,
+        foodType: (touched && errors.foodType) || serverErrors?.foodType,
+    };
+
+    const clearServerError = () => {
+        if (serverErrors) onClearServerErrors?.();
     };
 
     return (
@@ -211,12 +279,13 @@ const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: M
                             placeholder={t('menu.itemNamePlaceholder')}
                             onChange={(e) => {
                                 setName(e.target.value);
+                                clearServerError();
                                 if (touched) validate();
                             }}
-                            status={errors.name ? 'error' : undefined}
+                            status={visibleErrors.name ? 'error' : undefined}
                         />
-                        {touched && errors.name && (
-                            <span className="twk-menu-form__error">{errors.name}</span>
+                        {visibleErrors.name && (
+                            <span className="twk-menu-form__error">{visibleErrors.name}</span>
                         )}
                     </div>
 
@@ -230,14 +299,44 @@ const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: M
                             placeholder={t('menu.categoryPlaceholder')}
                             onChange={(v) => {
                                 setCategory(v);
+                                clearServerError();
                                 if (touched) validate();
                             }}
-                            status={errors.category ? 'error' : undefined}
-                            options={MENU_CATEGORIES.map((c) => ({ value: c, label: c }))}
+                            status={visibleErrors.category ? 'error' : undefined}
+                            options={
+                                categoryOptions && categoryOptions.length > 0
+                                    ? categoryOptions
+                                    : MENU_CATEGORIES.map((c) => ({ value: c, label: c }))
+                            }
                             aria-label={t('menu.category')}
                         />
-                        {touched && errors.category && (
-                            <span className="twk-menu-form__error">{errors.category}</span>
+                        {visibleErrors.category && (
+                            <span className="twk-menu-form__error">{visibleErrors.category}</span>
+                        )}
+                    </div>
+
+                    <div className="twk-menu-form__field">
+                        <label htmlFor="twk-menu-food-type">
+                            {t('menu.foodType')} <span aria-hidden="true">*</span>
+                        </label>
+                        <Select
+                            id="twk-menu-food-type"
+                            value={foodType}
+                            placeholder={t('menu.foodTypePlaceholder')}
+                            onChange={(v: FoodType) => {
+                                setFoodType(v);
+                                clearServerError();
+                                if (touched) validate();
+                            }}
+                            status={visibleErrors.foodType ? 'error' : undefined}
+                            options={[
+                                { value: 'Veg', label: t('menu.foodTypeVeg') },
+                                { value: 'Non-Veg', label: t('menu.foodTypeNonVeg') },
+                            ]}
+                            aria-label={t('menu.foodType')}
+                        />
+                        {visibleErrors.foodType && (
+                            <span className="twk-menu-form__error">{visibleErrors.foodType}</span>
                         )}
                     </div>
 
@@ -360,8 +459,8 @@ const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: M
                                 </div>
                             ))}
                         </div>
-                        {touched && errors.variants && (
-                            <span className="twk-menu-form__error">{errors.variants}</span>
+                        {visibleErrors.variants && (
+                            <span className="twk-menu-form__error">{visibleErrors.variants}</span>
                         )}
                     </div>
 
@@ -417,11 +516,21 @@ const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: M
                     </div>
 
                     <div className="twk-menu-form__footer">
-                        <TwkButton variant="secondary" onClick={handleSaveDraft}>
+                        <TwkButton
+                            variant="secondary"
+                            onClick={handleSaveDraft}
+                            loading={saving}
+                            disabled={saving}
+                        >
                             {t('menu.saveDraft')}
                         </TwkButton>
-                        <TwkButton variant="primary" onClick={handleSaveContinue}>
-                            {t('menu.saveContinue')} →
+                        <TwkButton
+                            variant="primary"
+                            onClick={handleSaveContinue}
+                            loading={saving}
+                            disabled={saving}
+                        >
+                            {mode === 'create' ? t('menu.saveContinue') : t('menu.updateContinue')} →
                         </TwkButton>
                     </div>
                 </div>
@@ -433,6 +542,11 @@ const MenuForm = ({ mode, initialValue, onBack, onSaveDraft, onSaveContinue }: M
                             <strong>{name || t('menu.newItem')}</strong>
                         </div>
                         <div className="twk-menu-form__summary-chips">
+                            <span className="twk-menu-form__pill">
+                                {foodType === 'Veg'
+                                    ? t('menu.foodTypeVeg')
+                                    : t('menu.foodTypeNonVeg')}
+                            </span>
                             {servingSize.trim() && (
                                 <span className="twk-menu-form__pill">
                                     {t('menu.serving', { value: servingSize.trim() })}

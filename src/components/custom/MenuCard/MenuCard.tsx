@@ -14,23 +14,51 @@ export type MenuCardProps = {
     onDelete: (item: MenuItem) => void;
 };
 
-const priceRange = (item: MenuItem): string => {
-    const prices = item.variants
-        .map((v) => Number(v.offerPrice ?? v.price))
-        .filter((n) => !Number.isNaN(n));
-    if (prices.length === 0) return '—';
-    const min = Math.min(...prices);
-    const max = Math.max(...prices);
-    return min === max ? `₹${min}` : `₹${min} – ₹${max}`;
+type CardPricing =
+    | { kind: 'offer'; original: number; offer: number }
+    | { kind: 'plain'; value: string }
+    | null;
+
+/**
+ * Best price to headline on the card. When any variant carries an offer
+ * price, the original is shown struck-through next to the highlighted
+ * offer (the cheapest offer wins). Otherwise the plain price/range is used.
+ */
+const cardPricing = (item: MenuItem): CardPricing => {
+    const parsed = item.variants
+        .map((v) => ({
+            original: Number(v.price),
+            offer: v.offerPrice?.trim() ? Number(v.offerPrice) : undefined,
+        }))
+        .filter((p) => Number.isFinite(p.original));
+
+    if (parsed.length === 0) return null;
+
+    const offers = parsed.filter(
+        (p): p is { original: number; offer: number } =>
+            p.offer !== undefined && Number.isFinite(p.offer),
+    );
+    if (offers.length > 0) {
+        const best = offers.reduce((a, b) => (a.offer <= b.offer ? a : b));
+        return { kind: 'offer', original: best.original, offer: best.offer };
+    }
+
+    const originals = parsed.map((p) => p.original);
+    const min = Math.min(...originals);
+    const max = Math.max(...originals);
+    return { kind: 'plain', value: min === max ? `₹${min}` : `₹${min} – ₹${max}` };
 };
 
 /**
- * Menu listing card: status pill, OFFER ribbon, nutrition pill,
+ * Menu listing card: status pill, OFFER ribbon, nutrition pill, price pair
+ * (struck-through original + highlighted offer), Veg/Non-Veg badge, and
  * Edit/Delete actions. Entry/exit/hover animations are CSS-only.
  */
 const MenuCard = ({ item, index = 0, leaving = false, onEdit, onDelete }: MenuCardProps) => {
     const { t } = useTranslation(['admin']);
     const hasOffer = item.variants.some((v) => v.offerPrice?.trim());
+    const pricing = cardPricing(item);
+    const isVeg = item.foodType === 'Veg';
     const statusVariant =
         item.status === 'Active' ? 'active' : item.status === 'Draft' ? 'draft' : 'inactive';
 
@@ -70,13 +98,41 @@ const MenuCard = ({ item, index = 0, leaving = false, onEdit, onDelete }: MenuCa
             <div className="twk-menu-card__body">
                 <div className="twk-menu-card__top">
                     <h3 className="twk-menu-card__name">{item.name}</h3>
-                    <span className="twk-menu-card__category">{item.category}</span>
+                    <div className="twk-menu-card__meta">
+                        <span className="twk-menu-card__category">{item.category}</span>
+                        <span
+                            className={`twk-menu-card__badge twk-menu-card__badge--${isVeg ? 'veg' : 'nonveg'}`}
+                        >
+                            {isVeg ? t('menu.foodTypeVeg') : t('menu.foodTypeNonVeg')}
+                        </span>
+                    </div>
                 </div>
                 {item.description && (
                     <p className="twk-menu-card__desc">{item.description}</p>
                 )}
                 <div className="twk-menu-card__pricing">
-                    <span className="twk-menu-card__price">{priceRange(item)}</span>
+                    <div className="twk-menu-card__prices">
+                        {pricing?.kind === 'offer' ? (
+                            <>
+                                <span
+                                    className="twk-menu-card__price twk-menu-card__price--struck"
+                                    aria-label={`Original price ₹${pricing.original}`}
+                                >
+                                    ₹{pricing.original}
+                                </span>
+                                <span
+                                    className="twk-menu-card__price twk-menu-card__price--offer"
+                                    aria-label={`Offer price ₹${pricing.offer}`}
+                                >
+                                    ₹{pricing.offer}
+                                </span>
+                            </>
+                        ) : (
+                            <span className="twk-menu-card__price">
+                                {pricing?.kind === 'plain' ? pricing.value : '—'}
+                            </span>
+                        )}
+                    </div>
                     <StatusBadge
                         variant={item.nutritionApproved ? 'approved' : 'pending'}
                         label={t(

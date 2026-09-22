@@ -1,0 +1,149 @@
+.twk-empty-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px dashed var(--color-base-neutral-200, #c3c3cb);
+  border-radius: 12px;
+  padding: 48px 16px;
+  text-align: center;
+  animation: twk-empty-menu-enter 420ms ease-out both;
+
+  &__art {
+    width: 180px;
+    height: 144px;
+    margin-bottom: 8px;
+    animation: twk-empty-menu-float 3.2s ease-in-out infinite;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__plate {
+    fill: #fff;
+    stroke: var(--color-base-neutral-200, #c3c3cb);
+    stroke-width: 2;
+  }
+
+  &__plate-inner {
+    fill: var(--color-base-neutral-50, #f4f4f6);
+    stroke: var(--color-base-neutral-100, #dedee2);
+    stroke-width: 1.5;
+  }
+
+  &__plate-shadow {
+    fill: var(--color-base-neutral-100, #dedee2);
+    opacity: 0.6;
+  }
+
+  &__cutlery rect {
+    fill: var(--color-base-neutral-200, #c3c3cb);
+  }
+
+  &__steam path {
+    fill: none;
+    stroke: var(--color-base-neutral-200, #c3c3cb);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    opacity: 0;
+    animation: twk-empty-menu-steam 2.6s ease-in-out infinite;
+  }
+
+  &__steam path:nth-child(2) {
+    animation-delay: 0.4s;
+  }
+
+  &__steam path:nth-child(3) {
+    animation-delay: 0.8s;
+  }
+
+  &__sparkles circle {
+    fill: var(--color-brand-primary-300, #f5b04c);
+    opacity: 0.8;
+    animation: twk-empty-menu-twinkle 2.2s ease-in-out infinite;
+  }
+
+  &__sparkles circle:nth-child(2) {
+    animation-delay: 0.5s;
+  }
+
+  &__sparkles circle:nth-child(3) {
+    animation-delay: 1s;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  &__desc {
+    margin: 0 0 8px;
+    font-size: 13px;
+    color: var(--color-base-neutral-500, #7f7f91);
+  }
+}
+
+@keyframes twk-empty-menu-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes twk-empty-menu-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes twk-empty-menu-steam {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  40% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes twk-empty-menu-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .twk-empty-menu,
+  .twk-empty-menu__art,
+  .twk-empty-menu__steam path,
+  .twk-empty-menu__sparkles circle {
+    animation: none;
+  }
+}

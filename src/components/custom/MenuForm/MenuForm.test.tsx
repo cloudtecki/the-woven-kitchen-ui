@@ -2,7 +2,7 @@ import { App as AntApp } from 'antd';
 import { MemoryRouter } from 'react-router';
 import { Provider } from 'react-redux';
 import { I18nextProvider } from 'react-i18next';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import i18n from '../../../tests/i18n-test-config';
@@ -52,6 +52,7 @@ describe('MenuForm', () => {
                 id: 'menu-1',
                 name: 'Chicken Dum Biryani',
                 category: 'Rice & Biryani',
+                foodType: 'Non-Veg',
                 description: 'Tasty',
                 servingSize: '250g',
                 ingredients: ['Rice'],
@@ -62,6 +63,24 @@ describe('MenuForm', () => {
         });
         expect(screen.getByText('Edit Menu Item')).toBeInTheDocument();
         expect(screen.getByDisplayValue('Chicken Dum Biryani')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Update & Continue/ })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Save & Continue/ })).not.toBeInTheDocument();
+        expect(screen.getByText('Non-Veg')).toBeInTheDocument();
+    });
+
+    it('uses server-backed categoryOptions when provided', async () => {
+        const user = userEvent.setup();
+        renderForm({
+            categoryOptions: [
+                { value: 'Rice & Biryani', label: 'Rice & Biryani' },
+                { value: 'Noodles', label: 'Noodles' },
+            ],
+        });
+        const combobox = screen.getByRole('combobox', { name: 'Category' });
+        await user.click(combobox);
+        expect(await screen.findByTitle('Noodles')).toBeInTheDocument();
+        expect(screen.getByTitle('Rice & Biryani')).toBeInTheDocument();
+        expect(screen.queryByTitle('Curries')).not.toBeInTheDocument();
     });
 
     it('shows validation errors on Save & Continue with empty mandatory fields', async () => {
@@ -95,5 +114,22 @@ describe('MenuForm', () => {
         await user.click(screen.getByRole('button', { name: /Save & Continue/ }));
         expect(await screen.findByText('Generate Nutrition with AI')).toBeInTheDocument();
         expect(screen.getByText(/Test Biryani/)).toBeInTheDocument();
+    });
+
+    it('captures the selected food type on save', async () => {
+        const user = userEvent.setup();
+        const { onSaveContinue } = renderForm();
+        await user.type(screen.getByPlaceholderText('e.g. Chicken Dum Biryani'), 'Test Biryani');
+        await user.click(screen.getByRole('combobox', { name: 'Category' }));
+        await user.click(screen.getByTitle('Curries'));
+        await user.type(screen.getByPlaceholderText('e.g. 500g'), 'Regular');
+        await user.type(screen.getByPlaceholderText('Price'), '199');
+        await user.click(screen.getByRole('combobox', { name: 'Food Type' }));
+        await user.click(screen.getByTitle('Veg'));
+        await user.click(screen.getByRole('button', { name: /Save & Continue/ }));
+        await waitFor(() => {
+            expect(onSaveContinue).toHaveBeenCalledTimes(1);
+        });
+        expect(onSaveContinue.mock.calls[0][0].foodType).toBe('Veg');
     });
 });
